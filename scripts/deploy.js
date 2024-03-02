@@ -1,3 +1,5 @@
+//ของเดิม 
+
 async function main() {
   const Voting = await ethers.getContractFactory("Voting");
 
