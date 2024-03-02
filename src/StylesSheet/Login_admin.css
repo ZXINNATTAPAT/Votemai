@@ -3,3 +3,17 @@
     background-size: cover;
     background-position:center ;
   }
+  .fonty {
+    font-family: 'Arista Pro Alternate', 'Arista Pro Trial', sans-serif;
+    font-weight: 900; /* This applies to 'Arista Pro Trial' */
+  }
+  
+  
+  .another-custom-font {
+    font-family: 'Arista Pro Trial', sans-serif;
+  }
+  
+  .icon-font {
+    font-family: 'Arista Pro Icons', sans-serif;
+  }
+  

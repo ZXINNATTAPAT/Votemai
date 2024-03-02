@@ -1,5 +1,5 @@
 import React from 'react'
-import Navbar from '../Components_page/Navbar'
+// import Navbar from '../Components_page/Navbar'
 import {ethers} from 'ethers';
 import '../StylesSheet/Login_admin.css'
 
@@ -35,7 +35,16 @@ export default function Login_admin() {
                     body: JSON.stringify({ address_web3: address })
                 });
                 const data = await response.json();
-                console.log(data); // Log the response from the server
+                console.log(data); 
+
+                if (data.token) {
+                    // Store token in localStorage
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                }
+
+                window.location.href = "/Main_Dashboard";
                 // Additional actions can be performed here, such as setting state variables or invoking other functions
             } catch (err) {
                 console.error(err); // Logs any errors that occur during the process

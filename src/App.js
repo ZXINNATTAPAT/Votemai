@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Mainpage from "./Page/Mainpage";
 import './App.css';
 import Login_admin from "./Components_admin/Login_admin";
+import Dashboard from "./Components_admin/Dashboard";
 
 function App() {
   return(
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Mainpage />} />
           <Route path="/Dashboard" element={<Login_admin />} />
+          <Route path="/Main_Dashboard" element={<Dashboard />} />
         
         </Routes>
       </BrowserRouter>
