@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const User = require('./routes/User');
 const Auth = require('./routes/Auth');
 const cors = require('cors'); // เพิ่ม cors middleware
+require('dotenv').config(); // ให้โหลดค่าจาก .env file
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.get('/', function (req, res) {
   })
 //   mongodb+srv://bigboyzin88:<password>@cluster0.blsdxre.mongodb.net/
 // ตั้งค่าการเชื่อมต่อ MongoDB
-mongoose.connect('mongodb+srv://bigboyzin88:fT1RfFwuBV5If7Gp@cluster0.blsdxre.mongodb.net/Votemai', {
+mongoose.connect(process.env.MONGODB_URI, {
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {
