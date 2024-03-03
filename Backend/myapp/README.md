@@ -15,7 +15,7 @@ npm install
 ถ้าต้องการรัน Backend
 
 ```shell
-ืnodemon index.js
+nodemon index.js
 ```
 
 ## Mongodb
