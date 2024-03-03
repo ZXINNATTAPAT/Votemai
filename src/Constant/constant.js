@@ -1,3 +1,4 @@
+// รันใหม่ใส่ใหม่ทุกคีั้ง
 const contractAddress = "0x0df408A8F6A18B21Ad6Ad4D7Bd12C833b6e8cdcE";
 //npx hardhat run --network MATIC scripts/deploy.js 
 //รันเสร็จจะได้ contractAddress ใหม่ทุกครั้ง

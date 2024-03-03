@@ -1,28 +1,60 @@
 # Decentralized Voting Application
 
-This is a demo application to implement voting in solidity smart contract using ReactJS. 
+นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
-[Youtube Tutorial](https://youtu.be/eCn6mHTpuM0)
+<!-- [Youtube Tutorial](https://youtu.be/eCn6mHTpuM0) -->
 
 ## Installation
 
-After you cloned the repository, you want to install the packages using
+หลังจากที่คุณโคลนพื้นที่เก็บข้อมูลแล้ว คุณต้องการติดตั้งแพ็คเกจโดยใช้
 
 ```shell
 npm install
 ```
 
-You first need to compile the contract and upload it to the blockchain network. Run the following commands to compile and upload the contract.
+ก่อนอื่นคุณต้องรวบรวมสัญญาและอัปโหลดไปยังเครือข่ายบล็อคเชน รันคำสั่งต่อไปนี้เพื่อคอมไพล์และอัพโหลดสัญญา
 
 ```shell
 npx hardhat compile
 npx hardhat run --network volta scripts/deploy.js
 ```
 
-Once the contract is uploaded to the blockchain, copy the contract address and copy it in the .env file. You can also use another blockchain by writing the blockchain's endpoint in hardhat-config.
+เมื่ออัพโหลดสัญญาไปยังบล็อคเชนแล้ว ให้คัดลอกที่อยู่สัญญาและคัดลอกในไฟล์ .env คุณยังสามารถใช้ blockchain อื่นได้โดยการเขียนจุดสิ้นสุดของ blockchain ใน hardhat-config
 
-Once you have pasted your private key and contract address in the .env file, simply run command
+เมื่อคุณวางคีย์ส่วนตัวและที่อยู่สัญญาในไฟล์ .env แล้ว ให้เรียกใช้คำสั่ง
 
 ```shell
 npm start
 ```
+
+## Installation Backend 
+
+แยกคนละ Terminal นะ 
+อยู่ในโพลเดอร์ Backend ใช้ Node.js + Express 
+
+```shell
+cd React-Voting-Application 
+cd Backend 
+cd my-app
+npm install
+```
+
+ถ้าต้องการรัน Backend
+```shell
+ืnodemon index.js
+```
+
+## Mongodb
+
+สร้างไฟล์ .env ไว้เก็บ 
+
+ใช้แบบ Compass นะ
+
+```shell
+MONGODB_URI ='mongodb+srv://<name>:<password>@cluster0.blsdxre.mongodb.net/Votemai'
+JWT_SECRET= "เชตเป็นอะไรก็ได้"
+```
+
+
+
+
