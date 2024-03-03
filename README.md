@@ -4,7 +4,7 @@
 
 <!-- [Youtube Tutorial](https://youtu.be/eCn6mHTpuM0) -->
 
-## Installation
+## Installation Frontend + set smart Contract
 
 หลังจากที่คุณโคลนพื้นที่เก็บข้อมูลแล้ว คุณต้องการติดตั้งแพ็คเกจโดยใช้
 
@@ -18,6 +18,9 @@ npm install
 npx hardhat compile
 npx hardhat run --network volta scripts/deploy.js
 ```
+เมื่ออัพโหลดสัญญาไปยังบล็อคเชนแล้ว ให้คัดลอกที่อยู่สัญญาและคัดลอกในไฟล์ .env คุณยังสามารถใช้ blockchain อื่นได้โดยการเขียนจุดสิ้นสุดของ blockchain ใน hardhat-config
+
+เมื่อคุณวางคีย์ส่วนตัวและที่อยู่สัญญาในไฟล์ .env แล้ว ให้เรียกใช้คำสั่ง
 
 hardhat.config.js ใช้ MATIC 
 
@@ -46,10 +49,6 @@ module.exports = {
    
  };
 ```
-
-เมื่ออัพโหลดสัญญาไปยังบล็อคเชนแล้ว ให้คัดลอกที่อยู่สัญญาและคัดลอกในไฟล์ .env คุณยังสามารถใช้ blockchain อื่นได้โดยการเขียนจุดสิ้นสุดของ blockchain ใน hardhat-config
-
-เมื่อคุณวางคีย์ส่วนตัวและที่อยู่สัญญาในไฟล์ .env แล้ว ให้เรียกใช้คำสั่ง
 
 ```shell
 npm start
