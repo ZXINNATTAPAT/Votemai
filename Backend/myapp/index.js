@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const User = require('./routes/User');
 const Auth = require('./routes/Auth');
+const vote = require('./routes/Vote');
+
 const cors = require('cors'); // เพิ่ม cors middleware
 require('dotenv').config(); // ให้โหลดค่าจาก .env file
 
@@ -25,6 +27,7 @@ app.use(express.json()); // เพื่อให้ Express อ่าน JSON �
 // เชื่อมต่อเส้นทางในไฟล์ routes
 app.use(User);
 app.use(Auth);
+app.use(vote);
 
 // กำหนดพอร์ตที่ Express.js จะเริ่มต้นฟัง
 const PORT =  8000;

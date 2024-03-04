@@ -2,6 +2,7 @@
 
 นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
+
 <!-- [Youtube Tutorial](https://youtu.be/eCn6mHTpuM0) -->
 
 ## Installation Frontend + set smart Contract
@@ -16,7 +17,7 @@ npm install
 
 ```shell
 npx hardhat compile
-npx hardhat run --network volta scripts/deploy.js
+npx hardhat run --network MATIC scripts/deploy.js
 ```
 เมื่ออัพโหลดสัญญาไปยังบล็อคเชนแล้ว ให้คัดลอกที่อยู่สัญญาและคัดลอกในไฟล์ .env คุณยังสามารถใช้ blockchain อื่นได้โดยการเขียนจุดสิ้นสุดของ blockchain ใน hardhat-config
 

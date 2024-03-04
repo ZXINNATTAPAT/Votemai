@@ -146,17 +146,12 @@ function Mainpage() {
                       handleNumberChange = {handleNumberChange}
                       voteFunction = {vote}
                       showButton = {CanVote}/>) 
-                      
                       : 
-                      
                       (<Login connectWallet = {connectToMetamask}/>)) : (<Finished />)}
       
     </div>
   );
 
-
-
 }
-
 
 export default Mainpage;
