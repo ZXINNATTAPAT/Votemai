@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
+const Vote = require('../models/VoteData');
 
 // Route สำหรับอัปเดตคะแนนโหวต
 router.post('/update-vote', async (req, res) => {
@@ -13,12 +14,8 @@ router.post('/update-vote', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    // อัปเดตคะแนนโหวต
-    user.vote += 1;
-
-    // บันทึกข้อมูลผู้ใช้ที่ถูกอัปเดตลงในฐานข้อมูล
-    await user.save();
+    user.vote += 1;// อัปเดตคะแนนโหวต
+    await user.save();// บันทึกข้อมูลผู้ใช้ที่ถูกอัปเดตลงในฐานข้อมูล
 
     res.status(200).json({ message: 'Vote updated successfully', newVoteCount: user.vote });
   } catch (err) {
@@ -26,5 +23,20 @@ router.post('/update-vote', async (req, res) => {
     res.status(500).json({ message: 'Failed to update vote' });
   }
 });
+
+/// เพิ่ม Route สำหรับรับข้อมูลโหวตผ่าน POST request
+router.post('/votesData', async (req, res) => {
+  try {
+    // สร้าง Vote ใหม่จากข้อมูลที่รับเข้ามา
+    const newVote = new Vote(req.body);
+    await newVote.save();
+    res.status(201).send(newVote);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
+
+
+
 
 module.exports = router;

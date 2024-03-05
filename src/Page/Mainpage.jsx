@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import React ,{ useState, useEffect } from 'react';
 import {ethers} from 'ethers';
 import {contractAbi, contractAddress} from '../Constant/constant';
+import axios from 'axios';
 import Login from '../Components_client/Login';
 import Finished from '../Components_client/Finished';
 import Connected from '../Components_client/Connected';
@@ -47,6 +48,39 @@ function Mainpage() {
       canVote();
   }
 
+  async function vote() {
+    // โหลด provider จาก window.ethereum
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const contractInstance = new ethers.Contract (
+        contractAddress, contractAbi, signer
+    );
+
+    const tx = await contractInstance.vote(number);// ทำการโหวต
+    await tx.wait();
+
+    getCandidates();// เรียกใช้ฟังก์ชันเพื่ออัปเดตข้อมูลผู้สมัคร
+
+    const voteData = await contractInstance.getAllVotesOfCandiates();// รับข้อมูลการโหวตทั้งหมด
+
+    // นับจำนวนโหวตของแต่ละ Candidate
+    const candidateVotes = {};
+    voteData.forEach(candidate => {
+        candidateVotes[candidate.code_id] = (candidateVotes[candidate.code_id] || 0) + 1;
+    });
+
+    // ส่งข้อมูล votes ผ่าน API เมื่อโหวตเสร็จสิ้น
+    const voteSummary = {
+        name_vote:"VotingSummary",
+        votes: candidateVotes,
+        endDate: new Date().toISOString()  // ใส่วันสิ้นสุดของข้อมูลที่นี่
+    };
+    sendVotesSummary(voteSummary);
+
+    // เรียกฟังก์ชันอื่นๆ ตามต้องการ
+    canVote();
+  }
 
   async function canVote() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -78,7 +112,6 @@ function Mainpage() {
       setCandidates(formattedCandidates);
   }
 
-
   async function getCurrentStatus() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
@@ -99,7 +132,17 @@ function Mainpage() {
         contractAddress, contractAbi, signer
       );
       const time = await contractInstance.getRemainingTime();
-      setremainingTime(parseInt(time, 16));
+      const totalSeconds = parseInt(time, 16); // Convert hexadecimal string to integer
+
+      // Calculate hours, minutes, and seconds
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      // เก็บค่าในรูปแบบของชั่วโมง (Hr), นาที (Min), และวินาที (Sec)
+      const formattedTime = `${hours} Hr ${minutes} Min ${seconds} Sec`;
+
+      setremainingTime(formattedTime);
   }
 
   function handleAccountsChanged(accounts) {
@@ -136,20 +179,74 @@ function Mainpage() {
     setNumber(e.target.value);
   }
 
+  // ส่งข้อมูลโหวตผ่าน API
+  async function sendVotesSummary(voteSummary) {
+    try {
+        const response = await axios.post('http://localhost:8000/votesData', voteSummary);
+        console.log("Votes summary sent successfully:", response.data);
+    } catch (error) {
+        console.error("Failed to send votes summary:", error);
+    }
+  }
+
+  // ฟังก์ชันสำหรับปิดการโหวต
+async function handleVoteClose() {
+  try {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    await provider.send("eth_requestAccounts", []);
+    const signer = provider.getSigner();
+    const contractInstance = new ethers.Contract(
+      contractAddress, contractAbi, signer
+    );
+    // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
+    const tx = await contractInstance.closeVoting();
+    await tx.wait();
+    console.log("Voting closed successfully");
+  } catch (error) {
+    console.error("Error closing voting:", error);
+  }
+}
+
+
+
   return (
+    <>
+    
     <div className="App">
-      { votingStatus ? (isConnected ? (<Connected 
-                      account = {account}
-                      candidates = {candidates}
-                      remainingTime = {remainingTime}
-                      number= {number}
-                      handleNumberChange = {handleNumberChange}
-                      voteFunction = {vote}
-                      showButton = {CanVote}/>) 
-                      : 
-                      (<Login connectWallet = {connectToMetamask}/>)) : (<Finished />)}
+      
+    {votingStatus ? (
+        isConnected ? (
+          <React.Fragment>
+       
+              <Connected 
+                account={account}
+                candidates={candidates}
+                remainingTime={remainingTime}
+                number={number}
+                handleNumberChange={handleNumberChange}
+                voteFunction={vote}
+                showButton={CanVote}
+              />
+                <button className='btn btn-primary' onClick={handleVoteClose}>Close Voting</button>
+            
+          </React.Fragment>
+        ) : (
+          <Login connectWallet={connectToMetamask} />
+        )
+      ) : (
+        <Finished />
+      )}
+
+
+      
+
+      
       
     </div>
+   
+
+    </>
+
   );
 
 }

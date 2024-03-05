@@ -14,8 +14,8 @@ module.exports = {
      MATIC: {
       url: API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
-      gas: 210000000,
-      gasPrice: 800000000000,
+      gas: 3000000, // Increase the gas limit to a higher value
+      gasPrice: 8000000000,
      },
    },
    solidity: {

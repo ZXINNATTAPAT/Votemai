@@ -20,8 +20,6 @@ router.post('/auth', async (req, res) => {
         // สร้าง token โดยใช้ jwt.sign
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-        
-
         // ส่งข้อมูล user พร้อมกับ token ไปยังฝั่ง client
         res.status(200).json({ message: 'User authenticated successfully', user, token });
     } catch (err) {

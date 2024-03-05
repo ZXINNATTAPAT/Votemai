@@ -10,24 +10,37 @@ const Connected = (props) => {
     return (
         <>
         <Navbar />
-        <div className="container">
+        <div className="container "><br/>
             <h1 className="connected-header">You are Connected to Metamask</h1>
             <p className="connected-account">Metamask Account: {props.account}</p>
             <p className="connected-account">Remaining Time: {props.remainingTime}</p>
             { props.showButton ? (
                 <p className="connected-account">You have already voted</p>
             ) : (
-                <div>
-                    <input type="number" 
-                    placeholder="Entern Candidate Index" 
-                    value={props.number} 
-                    onChange={props.handleNumberChange}></input>
-            <br />
-            <button className="login-button" onClick={props.voteFunction}>Vote</button>
-
+                
+                <div className="row g-3">
+                <div className="col">
+                  <input
+                    type="number"
+                    placeholder="Enter Candidate Index"
+                    value={props.number}
+                    onChange={props.handleNumberChange}
+                    className="form-control"
+                  />
                 </div>
+                <div className="col">
+                  <button
+                    className="btn btn-primary"
+                    onClick={props.voteFunction}
+                  >
+                    Vote
+                  </button>
+                </div>
+              </div>
+              
+                
             )}
-            
+            <br/>
             <table id="myTable" className="table candidates-table">
                 <thead>
                     <tr>
@@ -45,7 +58,7 @@ const Connected = (props) => {
                     </tr>
                     ))}
                 </tbody>
-            </table>
+            </table><br/><br/>
             
         </div>
         </>

@@ -41,6 +41,9 @@ export default function Login_admin() {
                     // Store token in localStorage
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(data.user));
+                    setTimeout(() => {
+                        localStorage.removeItem("token");
+                    }, 3600000); // 1 ชั่วโมง = 3600000 มิลลิวินาที
 
                 }
 
@@ -53,6 +56,8 @@ export default function Login_admin() {
             console.error("Metamask is not detected in the browser"); // Logs an error message if MetaMask is not installed
         }
     }
+
+    
     
     
     

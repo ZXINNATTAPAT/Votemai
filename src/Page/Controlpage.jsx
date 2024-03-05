@@ -7,8 +7,25 @@ import Votescores from '../Components_admin/Votescores_s';
 
 export default function Controlpage() {
 
-    const [currentPage, setCurrentPage] = useState("main"); // เก็บสถานะหน้าปัจจุบัน
-    
+    const [currentPage, setCurrentPage] = useState("Dashboard"); // เก็บสถานะหน้าปัจจุบัน
+
+    // เช็คว่ามี Token หรือไม่
+        const token = localStorage.getItem('token');
+
+        // เช็คว่ามีข้อมูลผู้ใช้หรือไม่
+        const user = localStorage.getItem('user');
+
+        // แปลงข้อมูลผู้ใช้เป็น JSON object
+        const userData = user ? JSON.parse(user) : null;
+
+        // เช็คว่าผู้ใช้เป็น Admin หรือไม่
+        const isAdmin = userData && userData.roles === 'admin';
+
+        // เช็คว่าผู้ใช้ไม่ใช่ Admin และไม่มี Token
+        if (!isAdmin && !token) {
+            window.location.href ="/Dashboard"
+        }
+
 
     // ฟังก์ชันที่ใช้ในการเปลี่ยนหน้า
     const pageMain = () => {
@@ -34,18 +51,18 @@ export default function Controlpage() {
     <>
         <Navbar />
         <div className='container'>
+            {/* <button onClick={{deletetoken}}>Logout</button> */}
                 <div className='container'>
                 <br/>
                 <h1>{currentPage}</h1> 
                 <nav aria-label="breadcrumb">
-                <ol className="breadcrumb">
-                    <li className={`breadcrumb-item ${currentPage === 'Dashboard' ? 'active' : ''}`} onClick={pageMain} style={{color: currentPage === 'Dashboard' ? 'blue' : 'black'}}>Dashboard</li>
-                    <li className={`breadcrumb-item ${currentPage === 'addUser' ? 'active' : ''}`} onClick={pageAddUser} style={{ color: currentPage === 'addUser' ? 'blue' : 'black' }}>Add User</li>
-                    <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? 'active' : ''}`} onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li>
-                    <li className={`breadcrumb-item ${currentPage === 'votescores' ? 'active' : ''}`} onClick={pagevotescores} style={{ color: currentPage === 'votescores' ? 'blue' : 'black' }}>votescore</li>
-                    <li className={`breadcrumb-item ${currentPage === 'controlvote' ? 'active' : ''}`} onClick={pagecontrolvote} style={{ color: currentPage === 'controlvote' ? 'blue' : 'black' }}>controlvote</li>
-                </ol>
-
+                    <ol className="breadcrumb">
+                        <li className={`breadcrumb-item ${currentPage === 'Dashboard' ? 'active' : ''}`} onClick={pageMain} style={{color: currentPage === 'Dashboard' ? 'blue' : 'black'}}>Dashboard</li>
+                        <li className={`breadcrumb-item ${currentPage === 'addUser' ? 'active' : ''}`} onClick={pageAddUser} style={{ color: currentPage === 'addUser' ? 'blue' : 'black' }}>Add User</li>
+                        <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? 'active' : ''}`} onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li>
+                        <li className={`breadcrumb-item ${currentPage === 'votescores' ? 'active' : ''}`} onClick={pagevotescores} style={{ color: currentPage === 'votescores' ? 'blue' : 'black' }}>votescore</li>
+                        <li className={`breadcrumb-item ${currentPage === 'controlvote' ? 'active' : ''}`} onClick={pagecontrolvote} style={{ color: currentPage === 'controlvote' ? 'blue' : 'black' }}>controlvote</li>
+                    </ol>
                 </nav>
 
 
