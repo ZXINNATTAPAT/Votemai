@@ -10,12 +10,14 @@ import './App.css';
 import Login_admin from "./Components_admin/Login_admin";
 import Dashboard from "./Components_admin/Dashboard";
 import Controlpage from "./Page/Controlpage";
+import Homepage from "./Page/Homepage";
 
 function App() {
   return(
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="/test" element={<Homepage />} />
           <Route path="/" element={<Mainpage />} />
           <Route path="/Dashboard" element={<Login_admin />} />
           
