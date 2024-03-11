@@ -2,4 +2,17 @@
     -webkit-box-shadow: 0px 0px 9px -1px rgba(120, 117, 117, 1);
     -moz-box-shadow: 0px 0px 9px -1px rgba(120, 117, 117, 1);
     box-shadow: 0px 0px 9px -1px rgba(120, 117, 117, 1);
+} 
+/* css box shadow genarate */
+
+.card-add-candidate:hover {
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    background-color: rgb(32, 101, 230);
+    color: white;
 }
+
+.card-logo-candidate{
+    background-image: url("../Img/Move_Forward_Party_Logo.svg.png");
+    background-size: cover;
+}
+  

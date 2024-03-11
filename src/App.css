@@ -38,7 +38,7 @@
   background-color: #f1f1f1;
 }
 
-.connected-header {
+/* .connected-header {
   font-size: 2rem;
   text-align: center;
   margin-bottom: 2rem;
@@ -48,7 +48,7 @@
   font-size: 1.2rem;
   text-align: center;
   margin-bottom: 2rem;
-}
+} */
 
 .connected-button {
   background-color: #007bff;
@@ -72,11 +72,11 @@
 }
 
 
-.candidates-table {
+/* .candidates-table {
   border-collapse: collapse;
   width: 50%;
   text-align:center;
-}
+} */
 
 .candidates-table th, .candidates-table td {
   padding: 8px;

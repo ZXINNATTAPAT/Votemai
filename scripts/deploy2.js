@@ -13,7 +13,6 @@ async function main() {
     // Format the names of users
     const userNames = userData.map(user => `${user.p_name} ${user.s_name}`);
 
-    
     const Voting_ = await Voting.deploy(userNames, 90);
     console.log("Contract address:", Voting_.address);
  

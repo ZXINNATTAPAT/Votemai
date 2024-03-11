@@ -4,48 +4,43 @@ import Adduser from '../Components_admin/Adduser';
 import Addcandidate from '../Components_admin/Addcandidate';
 import Controlvote from '../Components_admin/Controlvote_s';
 import Votescores from '../Components_admin/Votescores_s';
-
+//Admin control
 export default function Controlpage() {
 
     const [currentPage, setCurrentPage] = useState("Dashboard"); // เก็บสถานะหน้าปัจจุบัน
 
-    // เช็คว่ามี Token หรือไม่
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); // เช็คว่ามี Token หรือไม่
 
-        // เช็คว่ามีข้อมูลผู้ใช้หรือไม่
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('user');// เช็คว่ามีข้อมูลผู้ใช้หรือไม่
 
-        // แปลงข้อมูลผู้ใช้เป็น JSON object
-        const userData = user ? JSON.parse(user) : null;
+        const userData = user ? JSON.parse(user) : null;// แปลงข้อมูลผู้ใช้เป็น JSON object
 
-        // เช็คว่าผู้ใช้เป็น Admin หรือไม่
-        const isAdmin = userData && userData.roles === 'admin';
+        const isAdmin = userData && userData.roles === 'admin';// เช็คว่าผู้ใช้เป็น Admin หรือไม่
 
-        // เช็คว่าผู้ใช้ไม่ใช่ Admin และไม่มี Token
         if (!isAdmin && !token) {
-            window.location.href ="/Dashboard"
+            window.location.href ="/Dashboard"// เช็คว่าผู้ใช้ไม่ใช่ Admin และไม่มี Token
         }
 
 
-    // ฟังก์ชันที่ใช้ในการเปลี่ยนหน้า
-    const pageMain = () => {
-        setCurrentPage("Dashboard");
-    };
-    const pageAddUser = () => {
-        setCurrentPage("addUser");
-    };
+        // ฟังก์ชันที่ใช้ในการเปลี่ยนหน้า
+        const pageMain = () => {
+            setCurrentPage("Dashboard");
+        };
+        const pageAddUser = () => {
+            setCurrentPage("addUser");
+        };
 
-    const pageSomeOtherPage = () => {
-        setCurrentPage("Addcandidate");
-    };
+        const pageSomeOtherPage = () => {
+            setCurrentPage("Addcandidate");
+        };
 
-    const pagevotescores = () => {
-        setCurrentPage("votescores");
-    };
+        const pagevotescores = () => {
+            setCurrentPage("votescores");
+        };
 
-    const pagecontrolvote = () => {
-        setCurrentPage("controlvote");
-    };
+        const pagecontrolvote = () => {
+            setCurrentPage("controlvote");
+        };
 
   return (
     <>

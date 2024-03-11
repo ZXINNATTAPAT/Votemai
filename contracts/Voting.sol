@@ -46,7 +46,7 @@ constructor(string[] memory _candidateNames, uint256 _durationInMinutes) {
         voters[msg.sender] = true;
     }
 
-    function getAllVotesOfCandiates() public view returns (Candidate[] memory){
+    function getAllVotesOfCandidates() public view returns (Candidate[] memory) {
         return candidates;
     }
 

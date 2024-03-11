@@ -6,7 +6,7 @@ import '../StylesSheet/Login_admin.css'
 
 export default function Login_admin() {
 
-    //ไว้login Metamask
+    //ไว้ login Metamask
     async function connectToMetamask(e) {
         e.preventDefault();
         if (window.ethereum) { // Checks if MetaMask is installed
@@ -57,19 +57,24 @@ export default function Login_admin() {
         }
     }
 
-    
-    
-    
-    
   return (
     <>
      {/* <Navbar /><br/> */}
         <br/>
         <div className='container' style={{marginTop:"20vh"}}>
-            <div className='card' >
+            <div className='card shadow' style={{border:"none"}}>
                 <div className='card-body'>
                     <br/>
                     <section className='row '>
+                        
+                        <section className="col-lg-5 a-dis-col">
+                            <div className='card' style={{border:"none"}}>
+                                <div className="card-body">
+                                    <div className="bg-logo" style={{ width: "100%", height: "320px",backgroundSize: "cover" }} />
+                            
+                                </div>
+                            </div>
+                        </section>
 
                         <section className='col-lg-7 '>
                             <div className='card' style={{border:"none"}}>
@@ -104,19 +109,7 @@ export default function Login_admin() {
                            
                         </section>
 
-                        <section className="col-lg-5 ">
-                            <div className='card'>
-                                <div className="card-body">
-                                    <div className="bg-logo" style={{ width: "100%", height: "350px",backgroundSize: "cover" }}>
-                                        {/* You can add content inside the div if needed */}
-                                    </div>
-                                    {/* Add any additional content or text for your card */}
-                                    {/* <h5 className="card-title">Card Title</h5>
-                                    <p className="card-text">Some quick example text to build on the card.</p>
-                                    <a href="#" className="btn btn-primary">Go somewhere</a> */}
-                                </div>
-                            </div>
-                        </section>
+                        
 
                     </section>
                 </div>

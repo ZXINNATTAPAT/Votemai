@@ -2,6 +2,7 @@ import React from 'react'
 import Navbar from '../Components_page/Navbar'
 import '../StylesSheet/Component.css'
 
+
 export default function Homepage() {
 
     // ใส่ฟังชั่น Disable button card 

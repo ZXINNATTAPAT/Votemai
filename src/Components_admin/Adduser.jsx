@@ -19,12 +19,12 @@ export default function AddUser() {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8000/addusers', formData);
+            
             console.log(response.data.message);
             // ทำอะไรก็ตามที่คุณต้องการหลังจากส่งข้อมูลสำเร็จ
         } catch (error) {
             console.error('Error adding user:', error);
             alert(error);
-            // ทำอะไรก็ตามที่คุณต้องการหลังจากเกิดข้อผิดพลาด
         }
     };
 

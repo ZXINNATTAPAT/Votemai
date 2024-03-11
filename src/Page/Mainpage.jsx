@@ -1,11 +1,12 @@
 import React ,{ useState, useEffect } from 'react';
 import {ethers} from 'ethers';
 import {contractAbi, contractAddress} from '../Constant/constant';
-import axios from 'axios';
 import Login from '../Components_client/Login';
 import Finished from '../Components_client/Finished';
 import Connected from '../Components_client/Connected';
 import '../App.css';
+import axios from 'axios';
+
 
 function Mainpage() {
   const [provider, setProvider] = useState(null);
@@ -16,13 +17,15 @@ function Mainpage() {
   const [candidates, setCandidates] = useState([]);
   const [number, setNumber] = useState('');
   const [CanVote, setCanVote] = useState(true);
-
+  
 
   useEffect( () => {
     // setVotingStatus(true);
+    // getAllVotesOfCandidates();
     getCandidates();
     getRemainingTime();
     getCurrentStatus();
+    handleNumberChange();
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
     }
@@ -35,53 +38,68 @@ function Mainpage() {
   });
 
 
-  async function vote() {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
-      const contractInstance = new ethers.Contract (
-        contractAddress, contractAbi, signer
-      );
+  // async function vote() {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = provider.getSigner();
+  //     const contractInstance = new ethers.Contract (
+  //       contractAddress, contractAbi, signer
+  //     );
 
-      const tx = await contractInstance.vote(number);
-      await tx.wait();
-      canVote();
+  //     const tx = await contractInstance.vote(number);
+  //     await tx.wait();
+  //     canVote();
+  // }
+
+    async function vote() {
+      try {
+          const provider = new ethers.providers.Web3Provider(window.ethereum); // Load provider from window.ethereum
+          await provider.send("eth_requestAccounts", []);
+          const signer = provider.getSigner();
+          const contractInstance = new ethers.Contract(
+              contractAddress, contractAbi, signer
+          );
+  
+          const tx = await contractInstance.vote(number);// Vote
+          await tx.wait();
+  
+          getCandidates();  // Update candidate data
+  
+          const voteData = await contractInstance.getAllVotesOfCandidates();// Get all votes
+
+          const userData = getUserData();
+          
+          const userNames = userData.map(user => `${user.p_name} ${user.s_name}`);
+
+          const candidateVotes = {};
+          voteData.forEach(candidate => {
+              const candidateName = candidate.name;
+              const matchingUser = userNames.find(user => user.includes(candidateName));
+              if (matchingUser) {
+                  const codeId = userData.find(user => `${user.p_name} ${user.s_name}` === matchingUser).code_id;
+                  candidateVotes[codeId] = (candidateVotes[codeId] || 0) + 1;
+              }
+          });
+
+          const voteSummary = {
+              name_vote: "VotingSummary",
+              votes: candidateVotes,
+              endDate: new Date().toISOString()
+          };
+
+          await sendVotesSummary(voteSummary);
+
+          
+  
+  
+          canVote();// Call other necessary functions
+  
+      } catch (error) {
+          console.error('Error while voting:', error);
+          // Handle error here
+      }
   }
-
-  async function vote() {
-    // โหลด provider จาก window.ethereum
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    const contractInstance = new ethers.Contract (
-        contractAddress, contractAbi, signer
-    );
-
-    const tx = await contractInstance.vote(number);// ทำการโหวต
-    await tx.wait();
-
-    getCandidates();// เรียกใช้ฟังก์ชันเพื่ออัปเดตข้อมูลผู้สมัคร
-
-    const voteData = await contractInstance.getAllVotesOfCandiates();// รับข้อมูลการโหวตทั้งหมด
-
-    // นับจำนวนโหวตของแต่ละ Candidate
-    const candidateVotes = {};
-    voteData.forEach(candidate => {
-        candidateVotes[candidate.code_id] = (candidateVotes[candidate.code_id] || 0) + 1;
-    });
-
-    // ส่งข้อมูล votes ผ่าน API เมื่อโหวตเสร็จสิ้น
-    const voteSummary = {
-        name_vote:"VotingSummary",
-        votes: candidateVotes,
-        endDate: new Date().toISOString()  // ใส่วันสิ้นสุดของข้อมูลที่นี่
-    };
-    sendVotesSummary(voteSummary);
-
-    // เรียกฟังก์ชันอื่นๆ ตามต้องการ
-    canVote();
-  }
-
+  
   async function canVote() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
@@ -91,9 +109,9 @@ function Mainpage() {
       );
       const voteStatus = await contractInstance.voters(await signer.getAddress());
       setCanVote(voteStatus);
-
   }
-
+  // getAllVotesOfCandiates
+  
   async function getCandidates() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
@@ -101,7 +119,7 @@ function Mainpage() {
       const contractInstance = new ethers.Contract (
         contractAddress, contractAbi, signer
       );
-      const candidatesList = await contractInstance.getAllVotesOfCandiates();
+      const candidatesList = await contractInstance.getAllVotesOfCandidates();
       const formattedCandidates = candidatesList.map((candidate, index) => {
         return {
           index: index,
@@ -179,6 +197,11 @@ function Mainpage() {
     setNumber(e.target.value);
   }
 
+  async function getUserData() {
+    const response = await axios.get('http://localhost:8000/users');
+    return response.data;
+}
+
   // ส่งข้อมูลโหวตผ่าน API
   async function sendVotesSummary(voteSummary) {
     try {
@@ -190,23 +213,22 @@ function Mainpage() {
   }
 
   // ฟังก์ชันสำหรับปิดการโหวต
-async function handleVoteClose() {
-  try {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    await provider.send("eth_requestAccounts", []);
-    const signer = provider.getSigner();
-    const contractInstance = new ethers.Contract(
-      contractAddress, contractAbi, signer
-    );
-    // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
-    const tx = await contractInstance.closeVoting();
-    await tx.wait();
-    console.log("Voting closed successfully");
-  } catch (error) {
-    console.error("Error closing voting:", error);
+  async function handleVoteClose() {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+      const contractInstance = new ethers.Contract(
+        contractAddress, contractAbi, signer
+      );
+      // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
+      const tx = await contractInstance.closeVoting();
+      await tx.wait();
+      console.log("Voting closed successfully");
+    } catch (error) {
+      console.error("Error closing voting:", error);
+    }
   }
-}
-
 
 
   return (
@@ -217,7 +239,6 @@ async function handleVoteClose() {
     {votingStatus ? (
         isConnected ? (
           <React.Fragment>
-       
               <Connected 
                 account={account}
                 candidates={candidates}
@@ -228,7 +249,6 @@ async function handleVoteClose() {
                 showButton={CanVote}
               />
                 <button className='btn btn-primary' onClick={handleVoteClose}>Close Voting</button>
-            
           </React.Fragment>
         ) : (
           <Login connectWallet={connectToMetamask} />

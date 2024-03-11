@@ -1,5 +1,5 @@
 // รันใหม่ใส่ใหม่ทุกคีั้ง
-const contractAddress = "0xB270d802658Dd18112E76186D7f54A00686686a6";
+const contractAddress = "0x9eb241a81720f255Bc996aAA97fCAcf2b0A0945b";
 //npx hardhat run --network MATIC scripts/deploy.js 
 //รันเสร็จจะได้ contractAddress ใหม่ทุกครั้ง
 
@@ -59,7 +59,7 @@ const contractAbi =   [
   },
   {
     "inputs": [],
-    "name": "getAllVotesOfCandiates",
+    "name": "getAllVotesOfCandidates",
     "outputs": [
       {
         "components": [
