@@ -81,7 +81,8 @@ function Mainpage() {
 }
 
   async function recordVoteData() {
-    try {
+    if(!votingStatus){
+       try {
         // Fetching user data
         console.log('Fetching user data...');
         const userData = await getUserData();
@@ -123,10 +124,15 @@ function Mainpage() {
         // Calling other necessary functions
         console.log('Calling other necessary functions...');
         console.log(candidates);
-    } catch (error) {
-        console.error('Error while recording vote data:', error);
-        // Handle error here
+      } catch (error) {
+          console.error('Error while recording vote data:', error);
+          // Handle error here
+      }
     }
+    else{
+      window.location.href="./Home"
+    }
+   
 }
 
   async function canVote() {
