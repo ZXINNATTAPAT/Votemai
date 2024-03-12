@@ -1,21 +1,30 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect } from "react";
 import Navbar from "../Components_page/Navbar";
 import '../StylesSheet/Component.css'
 
 const Connected = (props) => {
-    const [number, setNumber] = useState('');
 
-    const CardhandleNumberChange = (index) => {
-      setNumber(index);
-    };
+  const [number, setNumber] = useState(props.number);
 
-    const CandidateCard = ({ candidate, index }) => {
-      const handleClick = () => {
-        CardhandleNumberChange(index);
-      };
+  const handleSubmit = (e) => {
+    e.preventDefault(); // หยุดการกระทำของฟอร์มเมื่อถูกส่ง
+    props.voteFunction(number);
+  };
 
+  useEffect(() => {
+    props.handleNumberChange(number);
+  }, [number]); // Empty dependency array to run the effect only once after the initial render
+  
+  // Modify handleNumberChange to directly pass the value to props.handleNumberChange
+  const handleNumberChange = (value) => {
+    setNumber(value); // Update the local state
+    console.log("New number:", value); // Log the new value of number
+    props.handleNumberChange(value); // Pass the new value directly to props.handleNumberChange
+  };
+
+  const CandidateCard = ({ candidate, index }) => {
     return (
-      <div className="card shadow-sm card-add-candidate h-100" onClick={handleClick} style={{ cursor: 'pointer', border: "none" }}>
+      <div className="card shadow-sm card-add-candidate h-100" onClick={() => handleNumberChange(index)} style={{ cursor: 'pointer', border: "none" }}>
         <div className="card-body">
           <div className="row">
             <div className="col-4">
@@ -67,21 +76,21 @@ const Connected = (props) => {
           ) : (
             <div className="row g-3">
               <div className="col">
-              <input
-                  type="number"
-                  placeholder="Enter Candidate Index"
-                  value={ props.number}
-                  onChange={props.handleNumberChange}
-                  className="form-control"
-                />
-              </div>
-              <div className="col">
-                <button
-                  className="btn btn-primary"
-                  onClick={props.voteFunction}
-                >
-                  Vote
-                </button>
+              <form onSubmit={handleSubmit}>
+                  <input
+                    type="number"
+                    placeholder="Enter Candidate Index"
+                    value={number}
+                    onChange={(e) => handleNumberChange(e.target.value)}
+                    className="form-control"
+                  />
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                  >
+                    Vote
+                  </button>
+                </form>
               </div>
             </div>
           )}<br />
