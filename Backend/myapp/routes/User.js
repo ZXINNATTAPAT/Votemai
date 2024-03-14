@@ -89,12 +89,6 @@ router.post('/addusers', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
 // เส้นทาง GET เพื่อดึงข้อมูลผู้ใช้ทั้งหมด
 router.get('/users', async (req, res) => {
     try {

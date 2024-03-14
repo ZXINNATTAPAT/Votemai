@@ -102,42 +102,117 @@ router.get('/sh-votesData', async (req, res) => {
 
 // });
 
+// router.post('/votesData', async (req, res) => {
+//   try {
+//     // Validate required fields
+//     if (!req.body.name_vote || !req.body.votes || !req.body.endDate) {
+//       return res.status(400).json({ message: 'Missing required fields' });
+//     }
+//     // Create a new Vote object from the request body
+//     const newVote = new Vote({
+//       name_vote: req.body.name_vote,
+//       votes: req.body.votes,
+//       endDate: req.body.endDate
+//     });
+
+//     // Save the new Vote object to the database
+//     await newVote.save();
+
+//     // Pin the vote data to IPFS
+//     const formData = new FormData();
+//     formData.append('storedVoteSummary', JSON.stringify(req.body));
+
+//     const JWT = process.env.YOUR_JWT_ENV_VARIABLE;
+//     const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", formData, {
+//         maxBodyLength: Infinity,
+//         headers: {
+//             'Authorization': `Bearer ${JWT}`,
+//             'Content-Type': `application/json`
+//         }
+//     });
+//     console.log(response.data);
+
+//     // Send a success response with the newly created Vote object
+//     res.status(201).json({ newVote });
+//   } catch (err) {
+//     // Handle errors
+//     console.error('Error saving vote data:', err);
+//     res.status(500).json({ message: 'Failed to save vote data', error: err.message });
+//   }
+// });
+
 router.post('/votesData', async (req, res) => {
   try {
     // Validate required fields
+    console.log(req.body.votes);
+    console.log(req.body);
+
     if (!req.body.name_vote || !req.body.votes || !req.body.endDate) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-    // Create a new Vote object from the request body
-    const newVote = new Vote({
-      name_vote: req.body.name_vote,
-      votes: req.body.votes,
-      endDate: req.body.endDate
-    });
 
-    // Save the new Vote object to the database
-    await newVote.save();
+      // Check if the data already exists in the MongoDB
+      const existingVote = await Vote.findOne({ name_vote: req.body.name_vote });
+      console.log(existingVote);
+      
+      // If the data doesn't exist or if it exists but differs from the request body, proceed
+      if (!existingVote || existingVote.name_vote !== req.body.name_vote ) {
+          // Create a new Vote object from the request body
+          const newVote = new Vote({
+            name_vote: req.body.name_vote,
+            votes: req.body.votes,
+            endDate: req.body.endDate,
+            IpfsHash: null
+          });
 
-    // Pin the vote data to IPFS
-    const formData = new FormData();
-    formData.append('storedVoteSummary', JSON.stringify(req.body));
+      console.log(newVote);
 
-    const JWT = process.env.YOUR_JWT_ENV_VARIABLE;
-    const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", formData, {
-        maxBodyLength: Infinity,
-        headers: {
-            'Authorization': `Bearer ${JWT}`,
-            'Content-Type': `application/json`
+      // Save the new Vote object to the database
+      await newVote.save();
+
+      const existingVoteIfps = await Vote.findOne({IpfsHash : null  });
+        // Pin the vote data to IPFS
+        if(existingVoteIfps){
+          const formData = new FormData();
+          formData.append('voteData', JSON.stringify(req.body));
+
+          const JWT = process.env.YOUR_JWT_ENV_VARIABLE;
+          const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", formData, {
+              maxBodyLength: Infinity,
+              headers: {
+                  'Authorization': `Bearer ${JWT}`,
+                  'Content-Type': `application/json`
+              }
+          });
+          console.log(response.data);
+
+          // Update the newVote object with the IPFS hash
+          newVote.IpfsHash = response.data.IpfsHash;
+
+          // Save the newVote object with the updated IPFS hash to the database
+          await newVote.save();
         }
-    });
-    console.log(response.data);
+    } else {
+      console.log("Data already exists in MongoDB:", req.body.name_vote);
+    }
 
-    // Send a success response with the newly created Vote object
-    res.status(201).json({ newVote });
+    // Send a success response
+    res.status(201).json({ message: 'Vote data saved successfully' });
   } catch (err) {
     // Handle errors
     console.error('Error saving vote data:', err);
     res.status(500).json({ message: 'Failed to save vote data', error: err.message });
+  }
+});
+
+router.delete('/votesData_delete', async (req, res) => {
+  try {
+    // Delete all documents in the votes data collection
+    await Vote.deleteMany({});
+    res.status(200).json({ message: 'All votes data deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to delete votes data' });
   }
 });
 

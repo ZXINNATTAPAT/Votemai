@@ -15,6 +15,10 @@ const voteSchema = new mongoose.Schema({
   endDate: {
     type: Date,
     required: true
+  },
+  IpfsHash: {
+    type: String, // สมมติว่าเก็บเป็น String
+    required: false // ถ้าไม่จำเป็นต้องมีข้อมูลตลอดเวลา
   }
 });
 
