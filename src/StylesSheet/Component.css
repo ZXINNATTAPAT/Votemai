@@ -15,4 +15,12 @@
     background-image: url("../Img/Move_Forward_Party_Logo.svg.png");
     background-size: cover;
 }
+/*   
+.modal.fade.show {
+    opacity: 1;
+  }
   
+  .modal.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear;
+  } */

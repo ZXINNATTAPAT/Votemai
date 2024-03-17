@@ -6,6 +6,7 @@ import Login from '../Components_client/Login';
 import Connected from '../Components_client/Connected';
 import '../App.css';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 // import Homepage from './Homepage';
 
 function Mainpage() {
@@ -18,29 +19,42 @@ function Mainpage() {
   const [number, setNumber] = useState('');
   const [CanVote, setCanVote] = useState(true);
   const [hasRecordedData, setHasRecordedData] = useState(false);
-  let isDataSending = false;
+  // let isDataSending = false;
   
   useEffect(() => {
     async function fetchData() {
       if (!votingStatus) {
           await recordVoteData();
+          await Swal.fire({
+            title: 'Voting is closed.',
+            icon: 'error',
+            timer: 2000,
+            showConfirmButton: false,
+            willClose: () => {
+              window.location.href = './Home';
+            }
+          });
       }
       await getCandidates();
       await getRemainingTime();
       await getCurrentStatus();
       await getUserData();
+
   }
   fetchData();
     // Add event listener for Metamask account changes
     if (window.ethereum) {
       window.ethereum.on('accountsChanged', handleAccountsChanged);
     }
+
     // Remove event listener when component unmounts
     return () => {
       if (window.ethereum) {
         window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
       }
     };
+
+    
   }, [votingStatus]);
   
   
@@ -292,22 +306,22 @@ function Mainpage() {
   }
   
   // ฟังก์ชันสำหรับปิดการโหวต
-  async function handleVoteClose() {
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      await provider.send("eth_requestAccounts", []);
-      const signer = provider.getSigner();
-      const contractInstance = new ethers.Contract(
-        contractAddress, contractAbi, signer
-      );
-      // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
-      const tx = await contractInstance.closeVoting();
-      await tx.wait();
-      console.log("Voting closed successfully");
-    } catch (error) {
-      console.error("Error closing voting:", error);
-    }
-  }
+  // async function handleVoteClose() {
+  //   try {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     await provider.send("eth_requestAccounts", []);
+  //     const signer = provider.getSigner();
+  //     const contractInstance = new ethers.Contract(
+  //       contractAddress, contractAbi, signer
+  //     );
+  //     // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
+  //     const tx = await contractInstance.closeVoting();
+  //     await tx.wait();
+  //     console.log("Voting closed successfully");
+  //   } catch (error) {
+  //     console.error("Error closing voting:", error);
+  //   }
+  // }
 
   return (
     <>
@@ -324,11 +338,6 @@ function Mainpage() {
         />
       ) : (
         <>
-           {!votingStatus &&  hasRecordedData &&(
-            <>
-              {window.location.href = './Home'}
-            </>
-          )} 
           <Login connectWallet={connectToMetamask} />
         </>
       )}

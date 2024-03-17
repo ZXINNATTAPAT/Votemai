@@ -62,7 +62,7 @@ router.post('/addusers', async (req, res) => {
 
       // สร้าง SHA256 code จาก code_id
       const encryptedCodeId = CryptoJS.AES.encrypt(JSON.stringify(code_id), secret_key).toString();
-      const sha256Code = CryptoJS.SHA256(encryptedCodeId).toString(CryptoJS.enc.Hex);
+      // const sha256Code = CryptoJS.SHA256(encryptedCodeId).toString(CryptoJS.enc.Hex);
 
       // ถอดรหัส code_id ด้วย secret_key
       const decryptedCodeIdBytes = CryptoJS.AES.decrypt(encryptedCodeId, secret_key);
@@ -77,7 +77,7 @@ router.post('/addusers', async (req, res) => {
     }
 
     // สร้าง instance ของ User ใหม่
-    const newUser = new User({ code_id, p_name, s_name, address_web3, roles, vote, secret_key, SHA256_code: sha256Code });
+    const newUser = new User({ code_id, p_name, s_name, address_web3, roles, vote, secret_key, encryptedCode: encryptedCodeId });
 
     // บันทึกข้อมูลผู้ใช้ใหม่ลงในฐานข้อมูล
     await newUser.save();
@@ -88,6 +88,37 @@ router.post('/addusers', async (req, res) => {
     res.status(500).json({ message: 'Failed to add user' });
   }
 });
+
+router.post('/decrypted/users', async (req, res) => {
+  try {
+      const encryptedCodeId = req.body.encryptedCode;
+      const secret_key = req.body.secret_key;
+      
+      console.log('Encrypted code id:', encryptedCodeId);
+      console.log('Secret key:', secret_key);
+
+      // ถอดรหัสข้อมูลโดยใช้คีย์ลับ
+      const decryptedCodeIdBytes = CryptoJS.AES.decrypt(encryptedCodeId, secret_key);
+      let decryptedCodeId = decryptedCodeIdBytes.toString(CryptoJS.enc.Utf8);
+      
+      // ลบเครื่องหมาย " และช่องว่างที่เกิดขึ้น
+      decryptedCodeId = decryptedCodeId.replace(/"/g, '').trim();
+      
+      console.log('Decrypted code id:', decryptedCodeId);
+
+      // ค้นหาข้อมูลผู้ใช้โดยใช้ decryptedCodeId ที่ถอดรหัสได้
+      const userData = await User.findOne({ code_id: decryptedCodeId });
+
+      console.log('User data:', userData);
+      res.json(userData); // ส่งข้อมูลผู้ใช้กลับไป
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'An error occurred' });
+  }
+});
+
+
+
 
 // เส้นทาง GET เพื่อดึงข้อมูลผู้ใช้ทั้งหมด
 router.get('/users', async (req, res) => {

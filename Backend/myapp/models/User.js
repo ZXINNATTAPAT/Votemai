@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 
 // สร้าง Schema สำหรับ User
 const UserSchema = new mongoose.Schema({
-  SHA256_code: String,
+  encryptedCode: String,
   code_id: String,
   p_name: String,
   s_name: String,
