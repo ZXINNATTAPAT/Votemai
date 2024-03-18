@@ -56,7 +56,20 @@ nodemon index.js
 MONGODB_URI ='mongodb+srv://<name>:<password>@cluster0.blsdxre.mongodb.net/Votemai'
 JWT_SECRET= "เชตเป็นอะไรก็ได้"
 ```
-
+## Resources
+- MongoDB - NoSQL database for storing user data.
+- Express.js - Web application framework for Node.js.
+- React.js - JavaScript library for building user interfaces.
+- Node.js - JavaScript runtime environment.
+- IPFS - InterPlanetary File System for decentralized storage.
+- MATIC Network - Scalable and instant blockchain platform.
+- Metamask - Crypto wallet and gateway to blockchain apps.
+- Hardhat - Ethereum development environment for professionals.
+- Axios - Promise-based HTTP client for making requests.
+- Bootstrap - Frontend framework for building responsive designs.
+- JWT - JSON Web Tokens for secure authentication.
+- dotenv - Module for loading environment variables.
+- Nodemon - Utility for automatically restarting the server
 
 
 
