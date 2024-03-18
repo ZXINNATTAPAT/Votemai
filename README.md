@@ -23,7 +23,7 @@ npm install
 
 ```shell
 npx hardhat compile
-npx hardhat run --network MATIC scripts/deploy.js
+npx hardhat run --network MATIC scripts/deploy2.js
 ```
 เมื่ออัพโหลดสัญญาไปยังบล็อคเชนแล้ว ให้คัดลอกที่อยู่สัญญาและคัดลอกในไฟล์ .env คุณยังสามารถใช้ blockchain อื่นได้โดยการเขียนจุดสิ้นสุดของ blockchain ใน hardhat-config
 
