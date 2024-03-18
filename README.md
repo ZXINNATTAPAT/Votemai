@@ -2,6 +2,12 @@
 
 นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
+# Features
+- Decentralized voting system powered by smart contracts on the MATIC blockchain.
+- User-friendly web interface built with React.js and Bootstrap.
+- Secure authentication and authorization using JWT tokens.
+- Data storage using MongoDB Atlas cloud database.
+- IPFS integration for decentralized storage of vote data.
 
 <!-- [Youtube Tutorial](https://youtu.be/eCn6mHTpuM0) -->
 
