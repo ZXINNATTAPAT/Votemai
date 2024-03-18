@@ -72,5 +72,8 @@ JWT_SECRET= "เชตเป็นอะไรก็ได้"
 - [dotenv](https://www.npmjs.com/package/dotenv) - Module for loading environment variables.
 - [Nodemon](https://nodemon.io/) - Utility for automatically restarting the server.
 
+## How to 
+
+- [MATIC Network]([https://matic.network/](https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f)https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f) - How to connect Polygon Mumbai Testnet to MetaMask 
 
 
