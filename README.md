@@ -2,7 +2,7 @@
 
 นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
-# Features
+## Features
 - Decentralized voting system powered by smart contracts on the MATIC blockchain.
 - User-friendly web interface built with React.js and Bootstrap.
 - Secure authentication and authorization using JWT tokens.
@@ -57,19 +57,20 @@ MONGODB_URI ='mongodb+srv://<name>:<password>@cluster0.blsdxre.mongodb.net/Votem
 JWT_SECRET= "เชตเป็นอะไรก็ได้"
 ```
 ## Resources
-- MongoDB - NoSQL database for storing user data.
-- Express.js - Web application framework for Node.js.
-- React.js - JavaScript library for building user interfaces.
-- Node.js - JavaScript runtime environment.
-- IPFS - InterPlanetary File System for decentralized storage.
-- MATIC Network - Scalable and instant blockchain platform.
-- Metamask - Crypto wallet and gateway to blockchain apps.
-- Hardhat - Ethereum development environment for professionals.
-- Axios - Promise-based HTTP client for making requests.
-- Bootstrap - Frontend framework for building responsive designs.
-- JWT - JSON Web Tokens for secure authentication.
-- dotenv - Module for loading environment variables.
-- Nodemon - Utility for automatically restarting the server
+
+- [MongoDB](https://www.mongodb.com/) - NoSQL database for storing user data.
+- [Express.js](https://expressjs.com/) - Web application framework for Node.js.
+- [React.js](https://reactjs.org/) - JavaScript library for building user interfaces.
+- [Node.js](https://nodejs.org/) - JavaScript runtime environment.
+- [IPFS](https://ipfs.io/) - InterPlanetary File System for decentralized storage.
+- [MATIC Network](https://matic.network/) - Scalable and instant blockchain platform.
+- [Metamask](https://metamask.io/) - Crypto wallet and gateway to blockchain apps.
+- [Hardhat](https://hardhat.org/) - Ethereum development environment for professionals.
+- [Axios](https://axios-http.com/) - Promise-based HTTP client for making requests.
+- [Bootstrap](https://getbootstrap.com/) - Frontend framework for building responsive designs.
+- [JWT](https://jwt.io/) - JSON Web Tokens for secure authentication.
+- [dotenv](https://www.npmjs.com/package/dotenv) - Module for loading environment variables.
+- [Nodemon](https://nodemon.io/) - Utility for automatically restarting the server.
 
 
 
