@@ -29,34 +29,6 @@ npx hardhat run --network MATIC scripts/deploy2.js
 
 เมื่อคุณวางคีย์ส่วนตัวและที่อยู่สัญญาในไฟล์ .env แล้ว ให้เรียกใช้คำสั่ง
 
-hardhat.config.js ใช้ MATIC 
-
-```shell
-module.exports = {
-   defaultNetwork: "MATIC",
-   networks: {
-     hardhat: {},
-     MATIC: {
-      url: API_URL,
-      accounts: [`0x${PRIVATE_KEY}`],
-      gas: 210000000,
-      gasPrice: 800000000000,
-     },
-   },
-   solidity: {
-      compilers: [
-        {
-          version: "0.8.0",
-          settings: {} 
-          // สามารถกำหนดการตั้งค่าเพิ่มเติมได้ตามต้องการ
-        },
-        // สามารถเพิ่มเวอร์ชัน Solidity อื่น ๆ ที่ต้องการใช้ได้ตามต้องการ
-      ]
-    }
-   
- };
-```
-
 ```shell
 npm start
 ```
