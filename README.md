@@ -62,7 +62,7 @@ JWT_SECRET= "เชตเป็นอะไรก็ได้"
 - [Express.js](https://expressjs.com/) - Web application framework for Node.js.
 - [React.js](https://reactjs.org/) - JavaScript library for building user interfaces.
 - [Node.js](https://nodejs.org/) - JavaScript runtime environment.
-- [IPFS](https://ipfs.io/) - InterPlanetary File System for decentralized storage.
+- [IPFS(pinata)](https://www.pinata.cloud/) - InterPlanetary File System for decentralized storage.
 - [MATIC Network](https://matic.network/) - Scalable and instant blockchain platform.
 - [Metamask](https://metamask.io/) - Crypto wallet and gateway to blockchain apps.
 - [Hardhat](https://hardhat.org/) - Ethereum development environment for professionals.
