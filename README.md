@@ -74,6 +74,6 @@ JWT_SECRET= "เชตเป็นอะไรก็ได้"
 
 ## How to 
 
-- [MATIC Network]([https://matic.network/](https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f)https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f) - How to connect Polygon Mumbai Testnet to MetaMask 
+- [MATIC Network](https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f) - How to connect Polygon Mumbai Testnet to MetaMask 
 
 
