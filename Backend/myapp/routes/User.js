@@ -117,9 +117,6 @@ router.post('/decrypted/users', async (req, res) => {
   }
 });
 
-
-
-
 // เส้นทาง GET เพื่อดึงข้อมูลผู้ใช้ทั้งหมด
 router.get('/users', async (req, res) => {
     try {
@@ -129,6 +126,28 @@ router.get('/users', async (req, res) => {
       console.error(err);
       res.status(500).json({ message: 'Failed to retrieve users' });
     }
-  });
+});
+
+router.put('/users/:_id', async (req, res) => {
+  try {
+    const _id = req.params._id; // Extract _id from request params
+    const updatedUserData = req.body; // Data of the user to be updated
+
+    // Update the user data
+    const updatedUser = await User.findByIdAndUpdate(_id, updatedUserData, { new: true });
+
+    if (!updatedUser) {
+      // If user is not found, return 404 Not Found
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to update user' });
+  }
+});
+
+
 
 module.exports = router;

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken'); // เพิ่มโมดูล jwt
 
 const User = require('../models/User');
 
+
 router.post('/auth', async (req, res) => {
     try {
         const { address_web3 } = req.body;

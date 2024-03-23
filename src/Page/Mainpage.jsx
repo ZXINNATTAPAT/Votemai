@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { contractAbi, contractAddress } from '../Constant/constant';
-import Login from '../Components_client/Login';
+import Login from '../Client/Login';
 // import Finished from '../Components_client/Finished';
-import Connected from '../Components_client/Connected';
+import Connected from '../Client/Connected';
 import '../App.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import Errorpage from './Errorpage';
 // import Homepage from './Homepage';
 
 function Mainpage() {
-  const [provider, setProvider] = useState(null);
+  // const [provider, setProvider] = useState(null);
   const [account, setAccount] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [votingStatus, setVotingStatus] = useState(true);
@@ -19,45 +20,46 @@ function Mainpage() {
   const [number, setNumber] = useState('');
   const [CanVote, setCanVote] = useState(true);
   const [hasRecordedData, setHasRecordedData] = useState(false);
+  const [statususer , setstatususer] = useState(true);
+  // const [senddata , setSenddata] = useState(false);
   // let isDataSending = false;
   
   useEffect(() => {
-    async function fetchData() {
+    getCandidates();
+    getRemainingTime();
+    getCurrentStatus();
+    getUserData();
+}, []); // ระบุเป็น [] เนื่องจากไม่มี dependencies
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+useEffect(() => {
+  async function fetchData() {
+
       if (!votingStatus) {
-          await recordVoteData();
-          await Swal.fire({
-            title: 'Voting is closed.',
-            icon: 'error',
-            timer: 2000,
-            showConfirmButton: false,
-            willClose: () => {
-              window.location.href = './Home';
-            }
-          });
+        await recordVoteData();
+        
+      } else {
+         Swal.fire({
+          title: 'Voting is closed.',
+          icon: 'error',
+          timer: 2500,
+          showConfirmButton: false,
+          willClose: () => {
+            setstatususer(false);
+          }
+        });
       }
-      await getCandidates();
-      await getRemainingTime();
-      await getCurrentStatus();
-      await getUserData();
-
-  }
-  fetchData();
-    // Add event listener for Metamask account changes
-    if (window.ethereum) {
-      window.ethereum.on('accountsChanged', handleAccountsChanged);
-    }
-
-    // Remove event listener when component unmounts
-    return () => {
-      if (window.ethereum) {
-        window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-      }
-    };
-
     
-  }, [votingStatus]);
-  
-  
+  }
+
+  fetchData();
+});
+
+useEffect(() => {
+  if (window.ethereum) {window.ethereum.on('accountsChanged', handleAccountsChanged);}// Remove event listener when component unmounts
+  return () => {if (window.ethereum) {window.ethereum.removeListener('accountsChanged', handleAccountsChanged);}};
+}); // ระบุ handleAccountsChanged เป็น dependency
+
+
   async function vote(number) {
     console.log('Voting with number:', number);
     try {
@@ -217,7 +219,7 @@ function Mainpage() {
       try {
         // Connect to MetaMask provider
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        setProvider(provider);
+        // setProvider(provider);
 
         // Request account access from MetaMask
         await provider.send("eth_requestAccounts", []);
@@ -241,8 +243,8 @@ function Mainpage() {
           canVote();// Proceed to vote or perform other actions
         } else {
           // If the user does not exist, redirect to Home page
-          console.log("User not found in the system. Redirecting to Home page.");
-          window.location.href = "./Home";
+          console.log("User not found in the system. Redirecting to error page.");
+          setstatususer(false);
         }
 
         console.log("Metamask Connected : " + address);
@@ -255,6 +257,62 @@ function Mainpage() {
     }
   }
 
+  // async function connectToMetamask() {
+  //   if (window.ethereum && votingStatus) {
+  //     try {
+  //       // Connect to MetaMask provider
+  //       const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //       setProvider(provider);
+  
+  //       // Request account access from MetaMask
+  //       await window.ethereum.enable(); // รับอนุญาตให้เข้าถึงบัญชี MetaMask
+  
+  //       const signer = provider.getSigner();
+  //       const address = await signer.getAddress();
+  //       setAccount(address);
+  
+  //       // Check if the address exists in the system
+  //       const userExists = await checkUserExists(address);
+  
+  //       if (userExists) {
+  //         // If the user exists, fetch user data
+  //         const response = await fetch('http://localhost:8000/auth', {
+  //           method: 'POST',
+  //           headers: {
+  //             'Content-Type': 'application/json',
+  //             'Authorization': `Bearer ${localStorage.getItem('userToken')}`
+  //           },
+  //           body: JSON.stringify({ address_web3: address })
+  //         });
+  
+  //         if (response.ok) {
+  //           const userData = await response.json();
+  //           console.log("User data:", userData);
+  
+  //           // Set user token to Local Storage
+  //           localStorage.setItem('userToken', userData.token);
+  
+  //           canVote();// Proceed to vote or perform other actions
+  //         } else {
+  //           // Handle error response
+  //           console.error("Failed to authenticate user:", response.statusText);
+  //         }
+  //       } else {
+  //         // If the user does not exist, redirect to Home page
+  //         console.log("User not found in the system. Redirecting to Home page.");
+  //         window.location.href = "./Home";
+  //       }
+  
+  //       console.log("Metamask Connected : " + address);
+  //       setIsConnected(true);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   } else {
+  //     console.error("Metamask is not detected in the browser")
+  //   }
+  // }
+  
   async function checkUserExists(address) {
     try {
       // Call the API to check if the user exists
@@ -323,27 +381,46 @@ function Mainpage() {
   //   }
   // }
 
+  // async function stopVoting() {
+  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //   await provider.send("eth_requestAccounts", []);
+  //   const signer = provider.getSigner();
+  //   const contractInstance = new ethers.Contract(
+  //     contractAddress, contractAbi, signer
+  //   );
+  
+  //   // เรียกใช้เมธอดใน Smart Contract เพื่อหยุดการโหวต
+  //   const tx = await contractInstance.closeVoting();
+  
+  //   // รอให้รายการทำธุรกรรมถูกขึ้นทะเบียนในบล็อกเชน
+  //   await tx.wait();
+  
+  //   // ตรวจสอบว่าการโหวตถูกหยุดหรือยัง
+  //   const votingStatus = await contractInstance.getVotingStatus();
+  //   if (!votingStatus) {
+  //     console.log("Voting has been stopped successfully.");
+  //   } else {
+  //     console.log("Failed to stop voting.");
+  //   }
+  // }
+  
+
   return (
     <>
       <div className="App">
-      {votingStatus && isConnected && !hasRecordedData ? (
-        <Connected
-          account={account}
-          candidates={candidates}
-          remainingTime={remainingTime}
-          number={number}
-          handleNumberChange={handleNumberChange}
-          voteFunction={vote}
-          showButton={CanVote}
-        />
-      ) : (
-        <>
-          <Login connectWallet={connectToMetamask} />
-        </>
-      )}
-
-        
-
+        {votingStatus && isConnected && !hasRecordedData ? (
+          <Connected
+            account={account}
+            candidates={candidates}
+            remainingTime={remainingTime}
+            number={number}
+            handleNumberChange={handleNumberChange}
+            voteFunction={vote}
+            showButton={CanVote}
+          />
+        ) : (
+          statususer ? (<Login connectWallet={connectToMetamask} />) : (<Errorpage status ={votingStatus}/>)
+        )}
       </div>
     </>
   );

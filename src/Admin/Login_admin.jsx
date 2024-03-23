@@ -6,60 +6,49 @@ import '../StylesSheet/Login_admin.css'
 
 export default function Login_admin() {
 
-    //ไว้ login Metamask
+    function setToken(token) {localStorage.setItem('token', token);}
+
     async function connectToMetamask(e) {
-        e.preventDefault();
-        if (window.ethereum) { // Checks if MetaMask is installed
-            try {
-                // Creates a new Web3Provider using the current Ethereum provider (MetaMask)
-                const provider = new ethers.providers.Web3Provider(window.ethereum);
-                
-                // Requests user permission to access their accounts through MetaMask
-                await provider.send("eth_requestAccounts", []);
-                
-                // Gets the signer (account) from the provider
-                const signer = provider.getSigner();
-                
-                // Retrieves the Ethereum address of the connected account
-                const address = await signer.getAddress();
-                
-                // Logs the connected address to the console
-                console.log("Metamask Connected: " + address);
-                
-                // Call your API auth endpoint with the Ethereum address
-                const response = await fetch('http://localhost:8000/auth', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ address_web3: address })
-                });
-                const data = await response.json();
-                console.log(data); 
+        e.preventDefault(); 
+        if (!window.ethereum) {
+            console.error("MetaMask is not installed in the browser");
+            return;
+        }
 
-                if (data.token) {
-                    // Store token in localStorage
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    setTimeout(() => {
-                        localStorage.removeItem("token");
-                    }, 3600000); // 1 ชั่วโมง = 3600000 มิลลิวินาที
-
-                }
-
-                window.location.href = "/Main_Dashboard";
-                // Additional actions can be performed here, such as setting state variables or invoking other functions
-            } catch (err) {
-                console.error(err); // Logs any errors that occur during the process
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum); // Creates a new Web3Provider using the current Ethereum provider (MetaMask)
+            await provider.send("eth_requestAccounts", []);// Requests user permission to access their accounts through MetaMask
+            const signer = provider.getSigner();// Gets the signer (account) from the provider
+            const address = await signer.getAddress();// Retrieves the Ethereum address of the connected account
+            console.log("Metamask Connected: " + address);// Logs the connected address to the console
+            const response = await fetch('http://localhost:8000/auth', {// Call your API auth endpoint with the Ethereum address
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ address_web3: address })
+            });
+            if (!response.ok) {
+                throw new Error("Failed to authenticate user: " + response.statusText);
             }
-        } else {
-            console.error("Metamask is not detected in the browser"); // Logs an error message if MetaMask is not installed
+            const data = await response.json(); // console.log(data);
+            // Check if the user is an admin before creating and storing the token
+            if (data.user && data.user.roles === 'admin' && data.token) {
+                setToken(data.token);// Store token in localStorage
+                localStorage.setItem('user', JSON.stringify(data.user));
+                setTimeout(() => {
+                    localStorage.removeItem("token");
+                }, 3600000); // 1 hour in milliseconds
+                window.location.href = "/Main_Dashboard";
+            } else {
+                console.error("Non-admin user detected. Access denied.");
+            }
+        } catch (error) {
+            console.error("An error occurred while connecting to MetaMask:", error);
         }
     }
-
   return (
     <>
-     {/* <Navbar /><br/> */}
         <br/>
         <div className='container' style={{marginTop:"20vh"}}>
             <div className='card shadow' style={{border:"none"}}>
@@ -71,7 +60,6 @@ export default function Login_admin() {
                             <div className='card' style={{border:"none"}}>
                                 <div className="card-body">
                                     <div className="bg-logo" style={{ width: "100%", height: "320px",backgroundSize: "cover" }} />
-                            
                                 </div>
                             </div>
                         </section>
@@ -108,16 +96,11 @@ export default function Login_admin() {
                             </div>
                            
                         </section>
-
-                        
-
                     </section>
                 </div>
                 <br/>
             </div><br/>
         </div>
-        
     </>
-    
   )
 }

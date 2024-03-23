@@ -13,6 +13,7 @@ contract Voting {
 
     uint256 public votingStart;
     uint256 public votingEnd;
+    bool public votingStopped;
 
     constructor(string[] memory _candidateNames, uint256 _durationInMinutes) {
         for (uint256 i = 0; i < _candidateNames.length; i++) {
@@ -23,6 +24,7 @@ contract Voting {
         owner = msg.sender;
         votingStart = block.timestamp;
         votingEnd = block.timestamp + (_durationInMinutes * 1 minutes);
+        votingStopped = false;
     }
 
     modifier onlyOwner() {
@@ -33,11 +35,16 @@ contract Voting {
         _;
     }
 
-    function addCandidate(string memory _name) public onlyOwner {
+    modifier votingNotStopped() {
+        require(!votingStopped, "Voting has been stopped.");
+        _;
+    }
+
+    function addCandidate(string memory _name) public onlyOwner votingNotStopped {
         candidates.push(Candidate({name: _name, voteCount: 0}));
     }
 
-    function vote(uint256 _candidateIndex) public {
+    function vote(uint256 _candidateIndex) public votingNotStopped {
         require(!voters[msg.sender], "You have already voted.");
         require(
             _candidateIndex < candidates.length,
@@ -49,11 +56,7 @@ contract Voting {
         voters[msg.sender] = true;
     }
 
-    function getAllVotesOfCandidates()
-        public
-        view
-        returns (Candidate[] memory)
-    {
+    function getAllVotesOfCandidates() public view returns (Candidate[] memory) {
         return candidates;
     }
 
@@ -69,20 +72,7 @@ contract Voting {
         return votingEnd - block.timestamp;
     }
 
-    function closeVoting() public {
-        // Ensure that the voting process has not ended yet
-        require(block.timestamp < votingEnd, "Voting has already ended.");
-
-        // Calculate the end time for voting
-        uint256 votingEndTime = votingStart + (5 minutes);
-
-        // Ensure that the current time is within 5 minutes from the start time
-        require(
-            block.timestamp >= votingStart && block.timestamp <= votingEndTime,
-            "Can only close voting within 5 minutes from start time."
-        );
-
-        // Close the voting process by setting the end time to the current time
-        votingEnd = block.timestamp;
+    function stopVoting() public onlyOwner {
+        votingStopped = true;
     }
 }

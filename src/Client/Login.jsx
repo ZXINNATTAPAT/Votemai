@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "../Components_page/Navbar";
+import Navbar from "../Components/Navbar";
 
 const Login = (props) => {
     return (

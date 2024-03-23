@@ -30,7 +30,6 @@ export default function AddUser() {
 
     return (
       <>
-            <br/><h1>Add Users</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores quam reprehenderit velit nam soluta nobis fugiat sapiente non, possimus reiciendis, similique, modi fugit earum voluptatibus enim amet nesciunt adipisci error.</p>
             
             <form onSubmit={handleSubmit}>

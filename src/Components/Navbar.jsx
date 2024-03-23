@@ -25,7 +25,8 @@ export default function Navbar() {
     }
     // ฟังก์ชันสำหรับลบ Token ออกจาก localStorage
     function deleteToken() {
-        localStorage.removeItem('token');
+        localStorage.clear();
+        window.location.reload();
     }
 
   return (

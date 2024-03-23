@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from "react";
-import Navbar from "../Components_page/Navbar";
+import Navbar from "../Components/Navbar";
 import '../StylesSheet/Component.css'
 
 const Connected = (props) => {
@@ -13,7 +13,9 @@ const Connected = (props) => {
 
   useEffect(() => {
     props.handleNumberChange(number);
-  }, [number]); // Empty dependency array to run the effect only once after the initial render
+  }, [number ,props]); // Empty dependency array to run the effect only once after the initial render
+
+  //add props
   
   // Modify handleNumberChange to directly pass the value to props.handleNumberChange
   const handleNumberChange = (value) => {

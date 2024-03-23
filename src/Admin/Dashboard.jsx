@@ -3,6 +3,7 @@ import Navbar from '../Components_page/Navbar'
 
 export default function Dashboard() {
   const user = JSON.parse(localStorage.getItem('user'));
+  console.log(user);
 
   function pageAdduser(event)  {
     event.preventDefault();

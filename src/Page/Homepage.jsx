@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Swal from 'sweetalert2';
-import Navbar from '../Components_page/Navbar'
+import Navbar from '../Components/Navbar'
 import '../StylesSheet/Component.css'
 
 

@@ -7,6 +7,15 @@ require('dotenv').config(); // ให้โหลดค่าจาก .env file
 
 router.use(express.json()); // เพื่อให้ Express อ่าน JSON ใน request body
 
+const rateLimit = require("express-rate-limit");
+
+// เรียกใช้ middleware express-rate-limit และกำหนดจำนวนครั้งและเวลา
+const limiter = rateLimit({
+  windowMs: 30 * 60 * 1000, // 10 นาที
+  max: 20, // จำนวนครั้งสูงสุดที่อนุญาตภายในระยะเวลา 10 นาที
+  message: "Too many requests from this IP, please try again later" // ข้อความแจ้งเตือนเมื่อเกินจำนวนครั้งที่กำหนด
+});
+
 // Route สำหรับอัปเดตคะแนนโหวต
 router.post('/update-vote', async (req, res) => {
   try {
@@ -141,7 +150,7 @@ router.get('/sh-votesData', async (req, res) => {
 //   }
 // });
 
-router.post('/votesData', async (req, res) => {
+router.post('/votesData', limiter, async (req, res) => {
   try {
     // Validate required fields
     console.log(req.body.votes);
