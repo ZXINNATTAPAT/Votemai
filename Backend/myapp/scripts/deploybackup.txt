@@ -20,7 +20,7 @@ async function main() {
   const candidateNames = candidateUsers.map(user => `${user.p_name} ${user.s_name}`);
 
   // เรียกใช้งาน deploy โดยไม่ระบุที่อยู่ผู้ส่ง
-  const Voting_ = await Voting.deploy(candidateNames, 30);
+  const Voting_ = await Voting.deploy(candidateNames, 5);
 
   console.log("Contract address:", Voting_.address);
 }

@@ -28,7 +28,6 @@
   background-color: #0069d9;
 }
 
-
 .connected-container {
   display: flex;
   flex-direction: column;
@@ -37,18 +36,6 @@
   height: 100vh;
   background-color: #f1f1f1;
 }
-
-/* .connected-header {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.connected-account {
-  font-size: 1.2rem;
-  text-align: center;
-  margin-bottom: 2rem;
-} */
 
 .connected-button {
   background-color: #007bff;

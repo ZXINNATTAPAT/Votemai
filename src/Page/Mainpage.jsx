@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { contractAbi, contractAddress } from '../Constant/constant';
 import Login from '../Client/Login';
-// import Finished from '../Components_client/Finished';
 import Connected from '../Client/Connected';
 import '../App.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Errorpage from './Errorpage';
-// import Homepage from './Homepage';
+// import Homepage from './Homepage';   
+// import Finished from '../Components_client/Finished';   
 
 function Mainpage() {
   // const [provider, setProvider] = useState(null);
@@ -21,47 +21,41 @@ function Mainpage() {
   const [CanVote, setCanVote] = useState(true);
   const [hasRecordedData, setHasRecordedData] = useState(false);
   const [statususer , setstatususer] = useState(true);
-  // const [senddata , setSenddata] = useState(false);
-  // let isDataSending = false;
+
+  function setToken(token) {localStorage.setItem('token', token);}
   
   useEffect(() => {
     getCandidates();
     getRemainingTime();
     getCurrentStatus();
     getUserData();
-}, []); // ระบุเป็น [] เนื่องจากไม่มี dependencies
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
-useEffect(() => {
-  async function fetchData() {
+   
+  }, []); 
 
-      if (!votingStatus) {
-        await recordVoteData();
-        
-      } else {
-         Swal.fire({
-          title: 'Voting is closed.',
-          icon: 'error',
-          timer: 2500,
-          showConfirmButton: false,
-          willClose: () => {
-            setstatususer(false);
-          }
-        });
-      }
-    
-  }
+  useEffect(() => {
+    async function fetchData() {
+        if (!votingStatus && !hasRecordedData) {
+            await recordVoteData();
+              Swal.fire({
+              title: 'Voting is closed.',
+              icon: 'error',
+              showConfirmButton: false,
+              willClose: () => {
+                setstatususer(false);
+              }
+            });
+        } 
+    }
+    fetchData();
+  });
 
-  fetchData();
-});
-
-useEffect(() => {
-  if (window.ethereum) {window.ethereum.on('accountsChanged', handleAccountsChanged);}// Remove event listener when component unmounts
-  return () => {if (window.ethereum) {window.ethereum.removeListener('accountsChanged', handleAccountsChanged);}};
-}); // ระบุ handleAccountsChanged เป็น dependency
-
+  useEffect(() => {
+    if (window.ethereum) {window.ethereum.on('accountsChanged', handleAccountsChanged);}// Remove event listener when component unmounts
+    return () => {if (window.ethereum) {window.ethereum.removeListener('accountsChanged', handleAccountsChanged);}};
+  }); 
 
   async function vote(number) {
-    console.log('Voting with number:', number);
+    // console.log('Voting with number:', number);
     try {
       if (typeof number !== 'undefined' && number !== null) {// Check if voting time has ended
           // Voting process
@@ -76,16 +70,24 @@ useEffect(() => {
           await tx.wait();
   
           console.log('Voting transaction successful.');
-  
-          // Fetching candidates
-          console.log('Fetching candidates...');
+
+          console.log('Fetching candidates...'); // Fetching candidates
           getCandidates();
-  
+
           canVote();
+          Swal.fire({
+            title: 'You vote sucess',
+            icon: 'success',
+            timer: 3000,
+            showConfirmButton: false,
+            willClose: () => {
+              // Reload the page when the timer ends
+              window.location.reload();
+            }
+          });
         } else {
           console.error('Voting time has ended.');
-          // Voting time has ended, record vote data
-          await recordVoteData();
+          await recordVoteData();// Voting time has ended, record vote data
         }
     } catch (error) {
       console.error('Error while voting:', error);
@@ -94,16 +96,16 @@ useEffect(() => {
   }
   
   async function recordVoteData() {
-      try {
-        const userData = await getUserData();
-        console.log('User data:', userData);
-
+    if(!hasRecordedData){
+       try {
+        const userData = await getUserData(); // console.log('User data:', userData);
+       
         // Mapping user data to user names
         const userNames = userData.map(user => `${user.p_name} ${user.s_name}`);
-        console.log('User names:', userNames);
+        // console.log('User names:', userNames);
         // Processing vote data
-        console.log('Processing vote data...');
-        console.log(candidates);
+        // console.log('Processing vote data...');
+        // console.log(candidates);
 
         const candidateVotes =  candidates.reduce((accumulator, candidate) => {
           const candidateName = candidate.name;
@@ -119,7 +121,7 @@ useEffect(() => {
       
         console.log('Candidate votes:', candidates);
         // Creating vote summary
-        console.log('Creating vote summary...');
+        // console.log('Creating vote summary...');
 
         const voteSummary = {
           name_vote: "VotingSummary",
@@ -136,8 +138,10 @@ useEffect(() => {
         console.error('Error while recording vote data:', error);
         // Handle error here
       }
+    }
+     
   }
-  
+
   async function canVote() {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     await provider.send("eth_requestAccounts", []);
@@ -147,9 +151,6 @@ useEffect(() => {
     );
     const voteStatus = await contractInstance.voters(await signer.getAddress());
     setCanVote(voteStatus);
-  
-    // Record vote data
-    
   }
   
   async function getCandidates() {
@@ -201,6 +202,7 @@ useEffect(() => {
     const formattedTime = `${hours} Hr ${minutes} Min ${seconds} Sec`;
 
     setremainingTime(formattedTime);
+
   }
 
   function handleAccountsChanged(accounts) {
@@ -230,24 +232,35 @@ useEffect(() => {
         // Check if the address exists in the system
         const userExists = await checkUserExists(address);
 
+        const response = await fetch('http://localhost:8000/auth', {// Call your API auth endpoint with the Ethereum address
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+          body: JSON.stringify({ address_web3: address })
+        });
+        if (!response.ok) {
+            throw new Error("Failed to authenticate user: " + response.statusText);
+        }
+        const data = await response.json();
+
         if (userExists) {
           // If the user exists, fetch user data
           const userData = await getUserData_address(address);
-          console.log("User data:", userData);
-
-          // Set user token or perform other actions with the user data
-          // Set user token to Local Storage
-          localStorage.setItem('userToken', userData.token);
-          // Assuming there is a function named setToken
-
+          setToken(data.token);// Store token in localStorage
+          localStorage.setItem('user', JSON.stringify(data.user));
+          console.log("User data:", userData); // Set user token or perform other actions with the user data
+          
           canVote();// Proceed to vote or perform other actions
-        } else {
+        } 
+        else {
           // If the user does not exist, redirect to Home page
           console.log("User not found in the system. Redirecting to error page.");
           setstatususer(false);
         }
 
         console.log("Metamask Connected : " + address);
+       
         setIsConnected(true);
       } catch (err) {
         console.error(err);
@@ -404,7 +417,6 @@ useEffect(() => {
   //   }
   // }
   
-
   return (
     <>
       <div className="App">
@@ -418,8 +430,10 @@ useEffect(() => {
             voteFunction={vote}
             showButton={CanVote}
           />
+        )  : statususer ? (
+          <Login connectWallet={connectToMetamask} />
         ) : (
-          statususer ? (<Login connectWallet={connectToMetamask} />) : (<Errorpage status ={votingStatus}/>)
+          <Errorpage status={votingStatus} />
         )}
       </div>
     </>

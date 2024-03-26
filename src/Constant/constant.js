@@ -1,5 +1,5 @@
 // รันใหม่ใส่ใหม่ทุกคีั้ง
-const contractAddress = "0x3A0350DCa65c813f204002c28f3fdE97174927f0";
+const contractAddress = "0x072d92C860C81042Bb4735F7e54d84cf2df06cC1";
 //npx hardhat run --network MATIC scripts/deploy.js 
 //รันเสร็จจะได้ contractAddress ใหม่ทุกครั้ง
 
@@ -59,7 +59,7 @@ const contractAbi =   [
   },
   {
     "inputs": [],
-    "name": "closeVoting",
+    "name": "clearData",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -132,6 +132,26 @@ const contractAbi =   [
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_durationInMinutes",
+        "type": "uint256"
+      }
+    ],
+    "name": "setVotingEnd",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stopVoting",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_candidateIndex",
         "type": "uint256"
       }
@@ -181,6 +201,19 @@ const contractAbi =   [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "votingStopped",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

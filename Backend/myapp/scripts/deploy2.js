@@ -1,18 +1,12 @@
-// require('dotenv').config();
 const axios = require('axios');
-// const { ethers } = require('ethers');
 
 async function main() {
-  // กำหนดที่อยู่ของคุณจาก .env file
-  // const ownerAddress = process.env.CONTRACT_ADDRESS;
 
-  // Deploy the contract with the users' names retrieved from the API
   const Voting = await ethers.getContractFactory("Voting");
-
-  // Fetch user data from the local API (assuming it's running on port 5000)
+ 
   const response = await axios.get('http://localhost:8000/users');
   const userData = response.data;
-
+  
   // Filter out users who are candidates
   const candidateUsers = userData.filter(user => user.roles.includes("candidate"));
 

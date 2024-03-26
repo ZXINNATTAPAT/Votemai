@@ -19,7 +19,7 @@ const limiter = rateLimit({
 // Route สำหรับอัปเดตคะแนนโหวต
 router.post('/update-vote', async (req, res) => {
   try {
-    const { address_web3, code_id } = req.body;
+    const { address_web3, code_id, system_req } = req.body;
 
     // ค้นหาผู้ใช้ด้วย address_web3 และ code_id ในฐานข้อมูล
     const user = await User.findOne({ address_web3, code_id });
@@ -27,8 +27,30 @@ router.post('/update-vote', async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-    user.vote += 1;// อัปเดตคะแนนโหวต
-    await user.save();// บันทึกข้อมูลผู้ใช้ที่ถูกอัปเดตลงในฐานข้อมูล
+
+    // อัปเดตโหวตของผู้ใช้ตามเงื่อนไขของระบบ
+    switch (system_req) {
+      case "Admin":
+        if (user.vote === 0) {
+          user.vote += 1;
+          await user.save();
+        }
+        break;
+      case "vote_sucess":
+        if (user.vote === 1) {
+          user.vote += 1;
+          await user.save();
+        }
+        break;
+      case "vs":
+        if (user.vote === 2) {
+          user.vote += 1;
+          await user.save();
+        }
+        break;
+      default:
+        break;
+    }
 
     res.status(200).json({ message: 'Vote updated successfully', newVoteCount: user.vote });
   } catch (err) {
@@ -36,6 +58,7 @@ router.post('/update-vote', async (req, res) => {
     res.status(500).json({ message: 'Failed to update vote' });
   }
 });
+
 
 // เพิ่ม Route สำหรับรับข้อมูลโหวตผ่าน POST request
 // เพิ่มข้อมูลโหวตใหม่
@@ -156,56 +179,52 @@ router.post('/votesData', limiter, async (req, res) => {
     console.log(req.body.votes);
     console.log(req.body);
 
-    if (!req.body.name_vote || !req.body.votes || !req.body.endDate) {
+    if (!req.body.name_vote || !req.body.votes || !req.body.endDate || Object.keys(req.body.votes).length === 0) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
-
       // Check if the data already exists in the MongoDB
       const existingVote = await Vote.findOne({ name_vote: req.body.name_vote });
       console.log(existingVote);
-      
       // If the data doesn't exist or if it exists but differs from the request body, proceed
-      if (!existingVote || existingVote.name_vote !== req.body.name_vote ) {
-          // Create a new Vote object from the request body
-          const newVote = new Vote({
+      if (!existingVote) {
+        // Create a new Vote object from the request body
+        const newVote = new Vote({
             name_vote: req.body.name_vote,
             votes: req.body.votes,
             endDate: req.body.endDate,
             IpfsHash: null
-          });
-
-      console.log(newVote);
-
-      // Save the new Vote object to the database
-      await newVote.save();
-
-      const existingVoteIfps = await Vote.findOne({IpfsHash : null  });
-        // Pin the vote data to IPFS
-        if(existingVoteIfps){
-          const formData = new FormData();
-          formData.append('voteData', JSON.stringify(req.body));
-
-          const JWT = process.env.YOUR_JWT_ENV_VARIABLE;
-          const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", formData, {
-              maxBodyLength: Infinity,
-              headers: {
-                  'Authorization': `Bearer ${JWT}`,
-                  'Content-Type': `application/json`
-              }
-          });
-          console.log(response.data);
-
-          // Update the newVote object with the IPFS hash
-          newVote.IpfsHash = response.data.IpfsHash;
-
-          // Save the newVote object with the updated IPFS hash to the database
-          await newVote.save();
+        });
+        // Save the new vote
+        await newVote.save();
+        // Check if there is an existing vote with null IpfsHash for the same month
+        const existingVoteIfps = await Vote.findOne({ name_vote:req.body.name_vote ,IpfsHash: null , endDate: req.body.endDate });
+        // Pin the vote data to IPFS if there's an existing vote with null IpfsHash
+        if (existingVoteIfps) {
+            const formData = new FormData();
+            formData.append('voteData', JSON.stringify(req.body));
+    
+            const JWT = process.env.YOUR_JWT_ENV_VARIABLE;
+            const response = await axios.post("https://api.pinata.cloud/pinning/pinJSONToIPFS", formData, {
+                maxBodyLength: Infinity,
+                headers: {
+                    'Authorization': `Bearer ${JWT}`,
+                    'Content-Type': `application/json`
+                }
+            });
+            console.log(response.data);
+    
+            // Update the newVote object with the IPFS hash
+            newVote.IpfsHash = response.data.IpfsHash;
+    
+            // Save the newVote object with the updated IPFS hash to the database
+            await newVote.save();
         }
     } else {
-      console.log("Data already exists in MongoDB:", req.body.name_vote);
+        console.log('Vote with the same month already exists');
+        // Send a response indicating that a vote for the same month already exists
+        // res.status(409).json({ message: 'Vote for the same month already exists' });
     }
-
-    // Send a success response
+    // Send a success response if the vote is saved successfully
     res.status(201).json({ message: 'Vote data saved successfully' });
   } catch (err) {
     // Handle errors

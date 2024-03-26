@@ -24,3 +24,13 @@
     opacity: 0;
     transition: opacity 0.15s linear;
   } */
+  .card-set {
+    border-color: white; 
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.175);
+    transition:  box-shadow 0.25s; /* เพิ่ม transition เพื่อทำให้การเปลี่ยนแปลงมีการเฉพาะเวลา */
+}
+
+.card-set:hover {
+    border-width: 2.25px; /* เปลี่ยนความหนาของเส้นขอบเมื่อโฮเวอร์บน */
+    box-shadow: 0 6px 8px 0 rgba(255, 255, 255, 0.4), 0 6px 20px 0 #765affd0; /* เปลี่ยนเงาเมื่อโฮเวอร์บน */
+}

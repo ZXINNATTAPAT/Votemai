@@ -19,6 +19,7 @@ export default function Controlpage() {
     const userData = user ? JSON.parse(user) : null; // Parse user data to JSON object
     const isAdmin = userData && userData.roles === 'admin'; // Check if user is an admin
 
+    const [usersdata, Setusersdata] = useState([]);
     const [votesData, setVotesData] = useState(null);
     const [isMenuExpanded, setIsMenuExpanded] = useState(true);
 
@@ -37,8 +38,17 @@ export default function Controlpage() {
     }, [isAdmin, token]); // Dependencies: isAdmin and token
 
     
-
     useEffect(() => {
+        const fetchVotesDatausers = async () => {
+            try {
+                const response = await axios.get('http://localhost:8000/users');
+                const data = response.data; // Access the data object from the response
+                Setusersdata(data);
+                console.log(data)
+            } catch (error) {
+                console.error('Error fetching votes data:', error);
+            }
+        };
         const fetchVotesData = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/sh-votesData');
@@ -49,16 +59,39 @@ export default function Controlpage() {
                 console.error('Error fetching votes data:', error);
             }
         };
-    
+        fetchVotesDatausers();
         fetchVotesData();
     }, []);
+
+    const adminCount = usersdata.reduce((count, user) => {
+        if (user.roles === 'admin') {
+            count++;
+        }
+        return count;
+    }, 0);
+    const usersCount = usersdata.reduce((count, user) => {
+        if (user.roles === 'user') {
+            count++;
+        }
+        return count;
+    }, 0);
+    const candidatesCount = usersdata.reduce((count, user) => {
+        if (user.roles === 'candidate') {
+            count++;
+        }
+        return count;
+    }, 0);
+    const AllusersCount = usersdata.reduce((count, user) => {
+            count++;
+        return count;
+    }, 0);
 
 
     const pageMain = () => {
         setCurrentPage("Dashboard");
     };
     const pageAddUser = () => {
-        setCurrentPage("addUser");
+        setCurrentPage("AddUser");
     };
     const pageEditUsers = () => {
         setCurrentPage("EditUser");
@@ -77,93 +110,109 @@ export default function Controlpage() {
         <>
         <Navadmin /><br />
             <div className='container-fluid'>
+
                 <div className={isMenuExpanded ? 'row g-3':'row g-3'}>
                     <div className={isMenuExpanded ? 'col-md-2 ' : 'col-md-1'}>
-                        <div className='card shadow-sm' style={{ border: "none", width: isMenuExpanded ? '' : '', height: "80vh", transition: "width 0.5s ease" }}>
+                        <div className='card shadow-sm' 
+                            style={{ border: "none", width: isMenuExpanded ? '' : '', height: "80vh", transition: "width 0.5s ease" }}>
                             <div className='card-body '>
                                 <ul className="nav flex-column">
+
                                     <li className='nav-item mb-3' onClick={handleMenuToggle} >
                                         <a className="nav-link" href='#sdf'>
-                                            <i className="bi bi-list me-2" ></i>
+                                            <i className="bi bi-list me-2"style={{fontSize:"24.5px"}}  ></i>
                                         </a>
                                     </li>
     
                                     {isMenuExpanded ? (
                                         <>
-                                            <li className="nav-item ">
-                                                <p>Dashboard</p>
-                                            </li>
+                                            <li className="nav-item "><p><strong>Dashboard</strong></p></li>
 
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pageMain}>
-                                                    <i className="bi bi-bar-chart-line me-2"></i>Dashboard
+                                            <li className={`nav-item mb-3 ${currentPage === 'Dashboard' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'Dashboard' ? 'nav-link-font' : ''}`} 
+                                                    href='#Dashboard' onClick={pageMain}>
+                                                    <i className="bi bi-bar-chart-line me-2" ></i>Dashboard
                                                 </a>
                                             </li>
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pagevotescores}>
+                                            <li className={`nav-item mb-3 ${currentPage === 'votescores' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'votescores' ? 'nav-link-font' : ''}`} 
+                                                    href='#VotingScores' onClick={pagevotescores}>
                                                     <i className="bi bi-bar-chart-line me-2"></i>Voting Scores
                                                 </a>
                                             </li>
-
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pagecontrolvote}>
-                                                    <i className="bi bi-gear me-2"></i>Manage Voting
+                                            <li className={`nav-item mb-3 ${currentPage === 'controlvote' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'controlvote' ? 'nav-link-font' : ''}`} 
+                                                    href='#Manage Voting' onClick={pagecontrolvote}>
+                                                    <i className="bi bi-gear me-2" ></i>Manage Voting
                                                 </a>
                                             </li>
 
-                                            <li className="nav-item">
-                                                <p className=''>Users</p>
-                                            </li>
+                                            <li className="nav-item"><p ><strong>Users</strong></p></li>
 
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pageEditUsers}>
-                                                    <i className="bi bi-people me-2"></i>Edit Users
+                                            <li className={`nav-item mb-3 ${currentPage === 'EditUser' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'EditUser' ? 'nav-link-font' : ''}`} 
+                                                    href='#Edit Users' onClick={pageEditUsers}>
+                                                    <i className="bi bi-people me-2" ></i>Edit Users
                                                 </a>
                                             </li>
-
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pageAddUser}>
-                                                    <i className="bi bi-person-plus me-2"></i>Add Voter
+                                            <li className={`nav-item mb-3 ${currentPage === 'AddUser' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'AddUser' ? 'nav-link-font' : ''}`} 
+                                                    href='#Add Voter' onClick={pageAddUser}>
+                                                    <i className="bi bi-person-plus me-2" ></i>Add Voter
                                                 </a>
                                             </li>
-
-                                            <li className="nav-item mb-3">
-                                                <a className="nav-link" href='#sdf' onClick={pageSomeOtherPage}>
+                                            <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'Addcandidate' ? 'nav-link-font' : ''}`} 
+                                                    href='#Add Candidate' onClick={pageSomeOtherPage}>
                                                     <i className="bi bi-person-plus me-2"></i>Add Candidate
                                                 </a>
                                             </li>
+
                                         </>
                                     ) : (
                                         <>
-                                            <li className="nav-item mb-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Voting Scores">
-                                                <a className="nav-link " href='#1' onClick={pagevotescores} >
-                                                    <i className="bi bi-bar-chart-line me-2" ></i>
+                                            <li className={`nav-item mb-3 ${currentPage === 'votescores' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Voting Scores">
+                                                <a className={`nav-link ${currentPage === 'votescores' ? 'nav-link-font' : ''}`} 
+                                                    href='#1' onClick={pagevotescores} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-bar-chart-line bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
+                                                </a>
+                                            </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'controlvote' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Voting">
+                                                <a className={`nav-link ${currentPage === 'controlvote' ? 'nav-link-font' : ''}`}  
+                                                    href='#sdf' onClick={pagecontrolvote} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-gear bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
+                                                </a>
+                                            </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'EditUser' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Users">
+                                                <a className={`nav-link ${currentPage === 'EditUser' ? 'nav-link-font' : ''}`}  
+                                                    href='#sdf' onClick={pageEditUsers} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-people bi-3x me-2"style={{fontSize:"24.5px"}}  ></i>
+                                                </a>
+                                            </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'AddUser' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Voter">
+                                                <a className={`nav-link ${currentPage === 'AddUser' ? 'nav-link-font' : ''}`}
+                                                    href='#sdf' onClick={pageAddUser} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-person-plus bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
+                                                </a>
+                                            </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Add Candidate">
+                                                <a className={`nav-link ${currentPage === 'Add Candidate' ? 'nav-link-font' : ''}`} 
+                                                    href='#sdf' onClick={pageSomeOtherPage} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-person-plus  me-2"style={{fontSize:"24.5px"}} ></i>
                                                 </a>
                                             </li>
 
-                                            <li className="nav-item mb-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Voting">
-                                                <a className="nav-link" href='#sdf' onClick={pagecontrolvote}>
-                                                    <i className="bi bi-gear me-2"></i>
-                                                </a>
-                                            </li>
-
-                                            <li className="nav-item mb-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Users">
-                                                <a className="nav-link" href='#sdf' onClick={pageEditUsers}>
-                                                    <i className="bi bi-people me-2"></i>
-                                                </a>
-                                            </li>
-
-                                            <li className="nav-item mb-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Voter">
-                                                <a className="nav-link" href='#sdf' onClick={pageAddUser}>
-                                                    <i className="bi bi-person-plus me-2"></i>
-                                                </a>
-                                            </li>
-
-                                            <li className="nav-item mb-3" data-bs-toggle="tooltip" data-bs-placement="top" title="Add Candidate">
-                                                <a className="nav-link" href='#sdf' onClick={pageSomeOtherPage}>
-                                                    <i className="bi bi-person-plus me-2"></i>
-                                                </a>
-                                            </li>
                                         </>
                                     )}
 
@@ -173,56 +222,125 @@ export default function Controlpage() {
                     </div>
 
                     <div className={isMenuExpanded ? 'col-md-10 col-10 content-page' : 'col-md-11 col-11  content-page'}>
-                                <div className='card shadow-sm' style={{width:'100%',height:"auto",border:"none"}}>
-                                    <div className='card-body'>
+                           <div className='' style={{width:'100%',height:"auto",border:"none"}}>
+                                    <div className={isMenuExpanded ? 'container-fluid' : 'container-fluid'}>
                                         <h1>{currentPage}</h1>
                                         <nav aria-label="breadcrumb">
                                             <ol className="breadcrumb">
-                                                <li className={`breadcrumb-item ${currentPage === 'Dashboard' ? 'active' : ''}`} onClick={pageMain} style={{ color: currentPage === 'Dashboard' ? 'blue' : 'black' }}>Dashboard</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'addUser' ? 'active' : ''}`} onClick={pageAddUser} style={{ color: currentPage === 'addUser' ? 'blue' : 'black' }}>Add User</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? 'active' : ''}`} onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'votescores' ? 'active' : ''}`} onClick={pagevotescores} style={{ color: currentPage === 'votescores' ? 'blue' : 'black' }}>votescore</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'controlvote' ? 'active' : ''}`} onClick={pagecontrolvote} style={{ color: currentPage === 'controlvote' ? 'blue' : 'black' }}>controlvote</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'controlvote' ? 'active' : ''}`} onClick={pageEditUsers} style={{ color: currentPage === 'controlvote' ? 'blue' : 'black' }}>EditUser</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'Dashboard' ? '' : ''}`} 
+                                                    onClick={pageMain} style={{ color: currentPage === 'Dashboard' ? 'blue' : 'black' }}>Dashboard</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'AddUser' ? '' : ''}`} 
+                                                    onClick={pageAddUser} style={{ color: currentPage === 'AddUser' ? 'blue' : 'black' }}>Add User</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? '' : ''}`} 
+                                                    onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'votescores' ? '' : ''}`} 
+                                                    onClick={pagevotescores} style={{ color: currentPage === 'votescores' ? 'blue' : 'black' }}>votescore</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'controlvote' ? '' : ''}`} 
+                                                    onClick={pagecontrolvote} style={{ color: currentPage === 'controlvote' ? 'blue' : 'black' }}>controlvote</li>
+                                                <li className={`breadcrumb-item ${currentPage === 'controlvote' ? '' : ''}`} 
+                                                    onClick={pageEditUsers} style={{ color: currentPage === ' EditUser' ? 'blue' : 'black' }}>EditUser</li>
                                             </ol>
                                         </nav>
                                         {currentPage === "Dashboard" &&<>
-                                            <div className='row'>
-                                                <div className='col-sm-4'> 
-                                                    <div className='card'>
-                                                        <div className='card-body'>
-                                                            <VotingChart votingData={votesData} />
+                                            <div className='row  row-cols-1 row-cols-sm-2 row-cols-md-2'>
+                                                <div className='col'>
+                                                    <div className='row g-3 row-cols-1 row-cols-sm-1= row-cols-md-2'>
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm' style={{border:"none"}}>
+                                                                <div className='card-body' >
+                                                                    <div className='card-title'><h3>Users</h3></div>
+                                                                        <div className='card-text'>
+                                                                            <h3><i class="bi bi-person"></i> {usersCount}</h3>
+                                                                            <p style={{opacity:"60%"}}>Voters or users of the system</p>
+                                                                        </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className='col-sm-4'> 
-                                                    <div className='card'>
-                                                        <div className='card-body'>
-                                                            <VotingChart votingData={votesData} />
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm' style={{border:"none"}}>
+                                                                <div className='card-body' >
+                                                                <div className='card-title'><h3>Candidate</h3></div>
+                                                                    <div className='card-text'> 
+                                                                        <h3 ><i class="bi bi-person"></i> {candidatesCount}</h3>
+                                                                        <p style={{opacity:"60%"}}>candidates</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className='col-sm-4'> 
-                                                    <div className='card'>
-                                                        <div className='card-body'>
-                                                            <VotingChart votingData={votesData} />
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm' style={{border:"none"}}>
+                                                                <div className='card-body' >
+                                                                <div className='card-title'><h3>Admin</h3></div>
+                                                                    <div className='card-text'>
+                                                                        <h3 ><i class="bi bi-person"></i> {adminCount}</h3>
+                                                                        <p style={{opacity:"60%"}}>System management staff</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm' style={{border:"none"}}>
+                                                                <div className='card-body' >
+                                                                <div className='card-title'><h3>All users</h3></div>
+                                                                    <div className='card-text'>
+                                                                        <h3><i class="bi bi-person"></i> {AllusersCount}</h3> 
+                                                                        <p style={{opacity:"60%"}}>All users all </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
 
+                                                <div className='col'>
+                                                    <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-2'>
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm ' style={{border:"none" }}>
+                                                                <div className='card-body'>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col'>
+                                                            <div className='card shadow-sm h-100' style={{border:"none"}}>
+                                                                <div className='card-body'>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br/>
                                             </div>
-                                           
-                                            
+                                            <br/>
+
+                                            <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-2'>
+                                                <div className='col'> 
+                                                    <div className='card shadow-sm' style={{border:"none"}}>
+                                                        <div className='card-body'>
+                                                            <VotingChart votingData={votesData} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='col'> 
+                                                    <div className='card shadow-sm' style={{border:"none"}}>
+                                                        <div className='card-body'>
+                                                            <VotingChart votingData={votesData} />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        
                                         </> }
-                                        {currentPage === "addUser" && <Adduser />}
+                                        {currentPage === "AddUser" && <Adduser />}
                                         {currentPage === "EditUser" && <EditUserForm />}
                                         {currentPage === "Addcandidate" && <Addcandidate />}
-                                        {currentPage === "votescores" && <Votescores />}
+                                        {currentPage === "votescores" && <Votescores votesData={votesData}/>}
                                         {currentPage === "controlvote" && <Controlvote />}
                                     </div>
-                                </div>
+                            </div>     
                           
-                      
+            
                         <br/>
                     </div>
                 </div>

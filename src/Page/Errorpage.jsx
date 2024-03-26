@@ -7,7 +7,7 @@ export default function Errorpage(props) {
     }
     return (
       <div className='container'>
-        <div className='card shadow-sm p-2 mb-3  rounded' style={{ border: "none", marginTop: "35vh", textAlign: "center" }}>
+        <div className='card shadow-sm p-2 mb-3  rounded' style={{ border: "none", marginTop: "30vh", textAlign: "center" }}>
           <div className='card-body'>
             <h1 className="fonty d" style={{ color: "#765AFF", fontSize: "75.5px" }}>VOTEMAI</h1><br />
             <h4 className='card-text'>

@@ -22,11 +22,12 @@ module.exports = {
       compilers: [
         {
           version: "0.8.0",
-          settings: {} 
-          // สามารถกำหนดการตั้งค่าเพิ่มเติมได้ตามต้องการ
+          settings: {}  // สามารถเพิ่มเวอร์ชัน Solidity อื่น ๆ ที่ต้องการใช้ได้ตามต้องการ
         },
-        // สามารถเพิ่มเวอร์ชัน Solidity อื่น ๆ ที่ต้องการใช้ได้ตามต้องการ
       ]
-    }
+    },
+    paths: {
+      artifacts: "./Backend/myapp/artifacts"
+    },
    
  };

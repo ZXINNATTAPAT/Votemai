@@ -12,14 +12,13 @@ const EditUserPage = () => {
     vote: 0,
     secret_key: ''
   });
-  const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage] = useState(5);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [usersPerPage] = useState(10);
   // Get current users
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
-
   // Change page
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
@@ -68,108 +67,113 @@ const EditUserPage = () => {
 
   return (
     <div>
-      <div>
-      <form onSubmit={handleEditApi}>
-        <div className="mb-3">
-            <label htmlFor="code_id" className="form-label">CodeID:</label>
-            <input type="text" className="form-control" id="code_id" name="code_id" value={formData.code_id} onChange={handleInputChange} />
-        </div>
-        <div className='row'>
-            <div className="col mb-3">
-                <label htmlFor="p_name" className="form-label">First Name:</label>
-                <input type="text" className="form-control" id="p_name" name="p_name" value={formData.p_name} onChange={handleInputChange} />
-            </div>
-            <div className="col mb-3">
-                <label htmlFor="s_name" className="form-label">Last Name:</label>
-                <input type="text" className="form-control" id="s_name" name="s_name" value={formData.s_name} onChange={handleInputChange} />
-            </div>
-        </div>
-        
-        <div className="mb-3">
-            <label htmlFor="address_web3" className="form-label">Address Web3:</label>
-            <input type="text" className="form-control" id="address_web3" name="address_web3" value={formData.address_web3} onChange={handleInputChange} />
-        </div>
-        <div className='row'>
-            <div className="col mb-3">
-                <label htmlFor="roles" className="form-label">Roles:</label>
-                <input type="text" className="form-control" id="roles" name="roles" value={formData.roles} onChange={handleInputChange} />
-            </div>
-            <div className="col mb-3">
-                <label htmlFor="vote" className="form-label">Vote:</label>
-                <input  className="form-control" id="vote" name="vote" value={formData.vote} onChange={handleInputChange} />
-            </div>
-        </div>
-        
-        <button type="submit" className="btn btn-primary">Submit</button>
-        </form>
-        <br></br>
-      </div>
-
       <div className='card shadow-sm' style={{border:"none"}}>
         <div className='card-body'>
-          <div className='table-responsive'>
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>CODE-ID</th>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Address Web3</th>
-                  <th>Roles</th>
-                  <th>Vote</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>{user.code_id}</td>
-                    <td>{user.p_name}</td>
-                    <td>{user.s_name}</td>
-                    <td>{user.address_web3}</td>
-                    <td>{user.roles}</td>
-                    <td>{user.vote}</td>
-                    <td>
-                      <button onClick={() => handleEdit(user)} className="btn btn-primary me-2">Edit</button>
-                      <button onClick={() => handleDelete(user.code_id)} className="btn btn-danger">Delete</button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+            <form onSubmit={handleEditApi}>
+            <div className="mb-3">
+                <label htmlFor="code_id" className="form-label">CodeID:</label>
+                <input type="text" className="form-control" id="code_id" name="code_id" value={formData.code_id} onChange={handleInputChange} />
+            </div>
+            <div className='row'>
+                <div className="col mb-3">
+                    <label htmlFor="p_name" className="form-label">First Name:</label>
+                    <input type="text" className="form-control" id="p_name" name="p_name" value={formData.p_name} onChange={handleInputChange} />
+                </div>
+                <div className="col mb-3">
+                    <label htmlFor="s_name" className="form-label">Last Name:</label>
+                    <input type="text" className="form-control" id="s_name" name="s_name" value={formData.s_name} onChange={handleInputChange} />
+                </div>
+            </div>
+            
+            <div className="mb-3">
+                <label htmlFor="address_web3" className="form-label">Address Web3:</label>
+                <input type="text" className="form-control" id="address_web3" name="address_web3" value={formData.address_web3} onChange={handleInputChange} />
+            </div>
+            <div className='row'>
+                <div className="col mb-3">
+                <label htmlFor="roles" className="form-label">Roles:</label>
+                  <select className="form-select" id="roles" name="roles" value={formData.roles} onChange={handleInputChange}>
+                      <option value="" selected>Choose...</option>
+                      <option value="admin">Admin</option>
+                      <option value="user">User</option>
+                      <option value="candidate">Candidate</option>
+                  </select>
+                </div>
+                <div className="col mb-3">
+                    <label htmlFor="vote" className="form-label">Vote:</label>
+                    <input  className="form-control" id="vote" name="vote" value={formData.vote} onChange={handleInputChange} />
+                </div>
+            </div>
+            
+            <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+          <br></br>
         </div>
-        <nav aria-label="Page navigation example">
-          <ul className="pagination justify-content-center">
-            <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-              <a className="page-link" href="#Previous" onClick={() => paginate(currentPage - 1)} aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span className="sr-only">Previous</span>
-              </a>
-            </li>
-            {usersPerPage ? (
-              Array.from({ length: Math.ceil(users.length / usersPerPage) }, (v, i) => (
-                <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                  <a className="page-link" href="#page" onClick={() => paginate(i + 1)}>{i + 1}</a>
-                </li>
-              ))
-            ) : null}
-            <li className={`page-item ${currentPage === Math.ceil(users.length / usersPerPage) ? 'disabled' : ''}`}>
-              <a className="page-link" href="#Next" onClick={() => paginate(currentPage + 1)} aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span className="sr-only">Next</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-
-
       </div>
+      <br></br>
+
+        <div className='card shadow-sm' style={{border:"none"}}>
+          <div className='card-body'>
+            <div className='table-responsive'>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>CODE-ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Address Web3</th>
+                    <th>Roles</th>
+                    <th>Vote</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentUsers.map((user) => (
+                    <tr key={user._id}>
+                      <td>{user.code_id}</td>
+                      <td>{user.p_name}</td>
+                      <td>{user.s_name}</td>
+                      <td>{user.address_web3}</td>
+                      <td>{user.roles}</td>
+                      <td>{user.vote}</td>
+                      <td>
+                        <button onClick={() => handleEdit(user)} className="btn btn-primary me-2">Edit</button>
+                        <button onClick={() => handleDelete(user.code_id)} className="btn btn-danger">Delete</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <nav aria-label="Page navigation example">
+            <ul className="pagination justify-content-center">
+              <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                <a className="page-link" href="#Previous" onClick={() => paginate(currentPage - 1)} aria-label="Previous">
+                  {/* <span aria-hidden="true">&laquo;</span> */}
+                  <span className="sr-only"><i class="bi bi-caret-left-fill"></i><i class="bi bi-caret-left-fill"></i></span>
+                </a>
+              </li>
+              {usersPerPage ? (
+                Array.from({ length: Math.ceil(users.length / usersPerPage) }, (v, i) => (
+                  <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                    <a className="page-link" href="#page" onClick={() => paginate(i + 1)}>{i + 1}</a>
+                  </li>
+                ))
+              ) : null}
+              <li className={`page-item ${currentPage === Math.ceil(users.length / usersPerPage) ? 'disabled' : ''}`}>
+                <a className="page-link" href="#Next" onClick={() => paginate(currentPage + 1)} aria-label="Next">
+                  {/* <span aria-hidden="true">&raquo;</span> */}
+                  <span className="sr-only"><i class="bi bi-caret-right-fill"></i><i class="bi bi-caret-right-fill"></i></span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+
+        </div>
 
       <br/>
-
-      
-  
        
     </div>
   );
