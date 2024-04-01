@@ -30,7 +30,65 @@
     transition:  box-shadow 0.25s; /* เพิ่ม transition เพื่อทำให้การเปลี่ยนแปลงมีการเฉพาะเวลา */
 }
 
-.card-set:hover {
-    border-width: 2.25px; /* เปลี่ยนความหนาของเส้นขอบเมื่อโฮเวอร์บน */
-    box-shadow: 0 6px 8px 0 rgba(255, 255, 255, 0.4), 0 6px 20px 0 #765affd0; /* เปลี่ยนเงาเมื่อโฮเวอร์บน */
+
+
+
+.img-main-home {
+    background-image: url('../Img/milad-fakurian-rPdxh2xl2-E-unsplash.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
 }
+.img-main-home2 {
+    background-image: url('../Img/milad-fakurian-qyXipTWNeK8-unsplash.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.img-main-home3 {
+    background-image: url('../Img/shubham-dhage-TeAev-gzja0-unsplash.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.img-main-home4 {
+    background-image: url('../Img/646b80c5cd5c5cfd3768972a_img-open-graph-general-tiny.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    height:375px ;
+}
+
+.card-set-2{
+    /* From https://css.glass */
+    /* From https://css.glass */
+    background: rgba(40, 40, 40, 1);
+    border-radius: 16px;
+    /* box-shadow: 0 4px 30px rgba(255, 255, 255, 0.2); */
+    backdrop-filter: blur(75px);
+    -webkit-backdrop-filter: blur(75px);
+    border: 1.5px solid rgba(155, 155, 155, 1);
+}
+
+.card-set-2:hover {
+    border-width: 2.25px; /* เปลี่ยนความหนาของเส้นขอบเมื่อโฮเวอร์บน */
+    box-shadow: 0 8px 6px 0 rgba(255, 255, 255, 0.4), 0 4px 20px 0 hsla(269, 90%, 63%, 0.616); /* เปลี่ยนเงาเมื่อโฮเวอร์บน */
+}
+.Logo-kmutnb{
+    background-image: url("../Img/LOGO-KMUTNB--300x300.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+.inline-set-Card{
+    display: inline-block;
+}
+.card-set-pinata{
+    margin-top:0px;
+}
+
+@media screen and (max-width: 600px) {
+    .img-main-home4{
+        height: 250px;
+    }
+    .card-set-pinata{
+        margin-top: 0px;
+    }
+  }
+
+

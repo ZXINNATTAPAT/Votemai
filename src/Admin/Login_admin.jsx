@@ -50,56 +50,46 @@ export default function Login_admin() {
   return (
     <>
         <br/>
-        <div className='container' style={{marginTop:"20vh"}}>
-            <div className='card shadow' style={{border:"none"}}>
-                <div className='card-body'>
-                    <br/>
-                    <section className='row '>
-                        
-                        <section className="col-lg-5 a-dis-col">
-                            <div className='card' style={{border:"none"}}>
-                                <div className="card-body">
-                                    <div className="bg-logo" style={{ width: "100%", height: "320px",backgroundSize: "cover" }} />
+        <div className='container' >
+        <div className='card card-set  p-2 mb-3  rounded' style={{marginTop: "25vh"}}>
+                    <div className='card-body'>
+                        <div className="card-text">
+                            <div className="row g-3 row-cols-1 row-cols-sm-1 row-cols-md-2">
+                                <div className="col">
+                                    <h2 className="fonty d" style={{ color: "#765AFF", fontSize: "75.5px",textAlign:"center" ,marginTop:"40px"}}>VOTEMAI</h2>
+                                    <p  style={{textAlign:"center",fontSize: "16.5px"}}>Blockchain Technology</p>
                                 </div>
-                            </div>
-                        </section>
+                                <div className="col"><br/>
+                                    <h4 className="">ADMIN LOGIN</h4><br/>
+                                    <button className="btn  btn-outline-primary" onClick={connectToMetamask} >Login Metamask</button>
+                                    <br/>
+                                    <p style={{marginTop:"25px"}}><a className="" href="https://metamask.io/download/" >If you don't have one yet MetaMask Wallet</a></p>
+                                    
+                                </div>
+                            </div><br/>
 
-                        <section className='col-lg-7 '>
-                            <div className='card' style={{border:"none"}}>
+                            <div className='card shadow-sm' style={{borderColor:"orange"}}>
                                 <div className='card-body'>
-                                    <h1 className='card-title'>Login Admin</h1><br/>
-                                    <form className=''>
-                                    <div className="mb-3 row">
-                                        <div className='col-lg'>
-                                            <label for="staticEmail" className="form-label ">Email</label>
-                                            <input type="text" className="form-control  p-2 "  disabled/>
-                                        </div>
-                                    </div>
-                                    <div className="mb-3 row">
-                                        <div className='col-lg'>
-                                            <label for="inputPassword" className="form-label ">Password</label>
-                                            <input type="password" className="form-control p-2 "  disabled/>
-                                        </div>
-                                       
-                                    </div>
-                                    <div className="mb-3 row">
-                                        <div className='col-lg'>
-                                            <button className='btn btn-primary  p-2 m-1 '>Submit</button>
-                                        
-                                            <button className='btn btn-warning  p-2 m-1' onClick={connectToMetamask} >Connect MetaMask</button>
-                                            {/* <button className="login-button" onClick = {props.connectWallet}>Login Metamask</button> */}
-                                        </div>
-                                    </div>
-                               </form>
+                                    <p className='card-text'><i class="bi bi-exclamation-triangle" 
+                                    style={{color:"orange"}}></i>  
+                                         Please ensure that your <span><strong>Metamask</strong></span> login credentials are correct before proceeding. If you encounter login errors more than three times, please try again in 15 minutes. Thank you for your patience and understanding.
+                                    </p>
                                 </div>
-                                
                             </div>
+
+                            
+
                            
-                        </section>
-                    </section>
+                        </div>
+                    </div>
                 </div>
-                <br/>
-            </div><br/>
+
+                   
+                <footer style={{marginTop:"35vh"}}>
+                    <div>
+                        © 2024 Votemai. All rights reserved.
+                    </div>
+                </footer>
         </div>
     </>
   )

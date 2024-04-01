@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { contractAbi, contractAddress } from '../Constant/constant';
 import Login from '../Client/Login';
 import Connected from '../Client/Connected';
-import '../App.css';
+// import '../App.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import Errorpage from './Errorpage';
@@ -55,7 +55,6 @@ function Mainpage() {
   }); 
 
   async function vote(number) {
-    // console.log('Voting with number:', number);
     try {
       if (typeof number !== 'undefined' && number !== null) {// Check if voting time has ended
           // Voting process
@@ -75,16 +74,16 @@ function Mainpage() {
           getCandidates();
 
           canVote();
-          Swal.fire({
-            title: 'You vote sucess',
-            icon: 'success',
-            timer: 3000,
-            showConfirmButton: false,
-            willClose: () => {
-              // Reload the page when the timer ends
-              window.location.reload();
-            }
-          });
+            Swal.fire({
+              title: 'You vote sucess',
+              icon: 'success',
+              timer: 3000,
+              showConfirmButton: false,
+              willClose: () => {
+                // Reload the page when the timer ends
+                window.location.reload();
+              }
+            });
         } else {
           console.error('Voting time has ended.');
           await recordVoteData();// Voting time has ended, record vote data
@@ -107,27 +106,31 @@ function Mainpage() {
         // console.log('Processing vote data...');
         // console.log(candidates);
 
-        const candidateVotes =  candidates.reduce((accumulator, candidate) => {
-          const candidateName = candidate.name;
-          const matchingUser = userNames.find(user => user.includes(candidateName));
+        const candidateVotes = candidates.reduce((accumulator, candidate) => {
+          const candidateUserName = candidate.name; // เปลี่ยนชื่อตัวแปรเป็น candidateUserName
+          const matchingUser = userNames.find(user => user.includes(candidateUserName));
           if (matchingUser) {
-              const codeId = userData.find(user => `${user.p_name} ${user.s_name}` === matchingUser).code_id;
-              accumulator[codeId] = (accumulator[codeId] || 0) + candidate.voteCount;
+              const matchingUserData = userData.find(user => `${user.p_name} ${user.s_name}` === matchingUser);
+              if (matchingUserData) {
+                  const candidateFullname = `${matchingUserData.p_name} ${matchingUserData.s_name}`; // เปลี่ยนชื่อตัวแปรเป็น candidateFullname
+                  accumulator[candidateFullname] = (accumulator[candidateFullname] || 0) + candidate.voteCount;
+              } else {
+                  console.warn(`No matching user found for candidate: ${matchingUser}`);
+              }
           } else {
-              console.warn(`No matching user found for candidate: ${candidateName}`);
+              console.warn(`No matching user found for candidate: ${candidateUserName}`);
           }
           return accumulator;
       }, {});
       
         console.log('Candidate votes:', candidates);
-        // Creating vote summary
-        // console.log('Creating vote summary...');
-
+      
         const voteSummary = {
           name_vote: "VotingSummary",
           votes: candidateVotes,
           endDate: new Date().toISOString()
         };
+
         console.log('Vote summary:', voteSummary);
         // Sending vote summary
         console.log('Sending vote summary...');
@@ -270,62 +273,6 @@ function Mainpage() {
     }
   }
 
-  // async function connectToMetamask() {
-  //   if (window.ethereum && votingStatus) {
-  //     try {
-  //       // Connect to MetaMask provider
-  //       const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //       setProvider(provider);
-  
-  //       // Request account access from MetaMask
-  //       await window.ethereum.enable(); // รับอนุญาตให้เข้าถึงบัญชี MetaMask
-  
-  //       const signer = provider.getSigner();
-  //       const address = await signer.getAddress();
-  //       setAccount(address);
-  
-  //       // Check if the address exists in the system
-  //       const userExists = await checkUserExists(address);
-  
-  //       if (userExists) {
-  //         // If the user exists, fetch user data
-  //         const response = await fetch('http://localhost:8000/auth', {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //             'Authorization': `Bearer ${localStorage.getItem('userToken')}`
-  //           },
-  //           body: JSON.stringify({ address_web3: address })
-  //         });
-  
-  //         if (response.ok) {
-  //           const userData = await response.json();
-  //           console.log("User data:", userData);
-  
-  //           // Set user token to Local Storage
-  //           localStorage.setItem('userToken', userData.token);
-  
-  //           canVote();// Proceed to vote or perform other actions
-  //         } else {
-  //           // Handle error response
-  //           console.error("Failed to authenticate user:", response.statusText);
-  //         }
-  //       } else {
-  //         // If the user does not exist, redirect to Home page
-  //         console.log("User not found in the system. Redirecting to Home page.");
-  //         window.location.href = "./Home";
-  //       }
-  
-  //       console.log("Metamask Connected : " + address);
-  //       setIsConnected(true);
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   } else {
-  //     console.error("Metamask is not detected in the browser")
-  //   }
-  // }
-  
   async function checkUserExists(address) {
     try {
       // Call the API to check if the user exists
@@ -376,66 +323,28 @@ function Mainpage() {
       }
   }
   
-  // ฟังก์ชันสำหรับปิดการโหวต
-  // async function handleVoteClose() {
-  //   try {
-  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //     await provider.send("eth_requestAccounts", []);
-  //     const signer = provider.getSigner();
-  //     const contractInstance = new ethers.Contract(
-  //       contractAddress, contractAbi, signer
-  //     );
-  //     // เรียกฟังก์ชันในสัญญาอัจฉริยะเพื่อปิดการโหวต
-  //     const tx = await contractInstance.closeVoting();
-  //     await tx.wait();
-  //     console.log("Voting closed successfully");
-  //   } catch (error) {
-  //     console.error("Error closing voting:", error);
-  //   }
-  // }
-
-  // async function stopVoting() {
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   await provider.send("eth_requestAccounts", []);
-  //   const signer = provider.getSigner();
-  //   const contractInstance = new ethers.Contract(
-  //     contractAddress, contractAbi, signer
-  //   );
-  
-  //   // เรียกใช้เมธอดใน Smart Contract เพื่อหยุดการโหวต
-  //   const tx = await contractInstance.closeVoting();
-  
-  //   // รอให้รายการทำธุรกรรมถูกขึ้นทะเบียนในบล็อกเชน
-  //   await tx.wait();
-  
-  //   // ตรวจสอบว่าการโหวตถูกหยุดหรือยัง
-  //   const votingStatus = await contractInstance.getVotingStatus();
-  //   if (!votingStatus) {
-  //     console.log("Voting has been stopped successfully.");
-  //   } else {
-  //     console.log("Failed to stop voting.");
-  //   }
-  // }
   
   return (
     <>
-      <div className="App">
-        {votingStatus && isConnected && !hasRecordedData ? (
-          <Connected
-            account={account}
-            candidates={candidates}
-            remainingTime={remainingTime}
-            number={number}
-            handleNumberChange={handleNumberChange}
-            voteFunction={vote}
-            showButton={CanVote}
-          />
-        )  : statususer ? (
-          <Login connectWallet={connectToMetamask} />
-        ) : (
-          <Errorpage status={votingStatus} />
-        )}
-      </div>
+    
+        
+          {votingStatus && isConnected && !hasRecordedData ? (
+            <Connected
+              account={account}
+              candidates={candidates}
+              remainingTime={remainingTime}
+              number={number}
+              handleNumberChange={handleNumberChange}
+              voteFunction={vote}
+              showButton={CanVote}
+            />
+          )  : statususer ? (
+            <Login connectWallet={connectToMetamask} />
+          ) : (
+            <Errorpage status={votingStatus} />
+          )}
+        
+      
     </>
   );
 }

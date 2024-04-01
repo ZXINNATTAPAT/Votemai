@@ -10,7 +10,7 @@ const VotingChart = ({ votingData }) => {
     useEffect(() => {
         if (!votingData || !votingData.votes) return; // ตรวจสอบว่าข้อมูลไม่มีค่าหรือไม่มีข้อมูล votes
     
-        const keys = Object.keys(votingData.votes[0].votes);
+        const keys = Object.keys(votingData.votes);
         const setlabels = keys.map(key => `${key}`);
     
         const ctx = chartContainer.current.getContext('2d');
@@ -19,10 +19,10 @@ const VotingChart = ({ votingData }) => {
             labels: setlabels,
             datasets: [{
                 label: 'Votes',
-                data: Object.values(votingData.votes[0].votes),
+                data: Object.values(votingData.votes),
                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 0.5
+                borderWidth: 1
             }]
         };
     

@@ -1,28 +1,50 @@
 import React, { useEffect, useState } from 'react'
 import Adduser from '../Admin/Adduser';
-import Addcandidate from '../Admin/Addcandidate';
-import Controlvote from '../Admin/Controlvote_s';
+// import Addcandidate from '../Admin/Addcandidate';
+import Controlvote from '../Admin/Verification';
 import Votescores from '../Admin/Votescores_s';
 import Navadmin from '../Components/Navadmin';
 import EditUserForm from '../Admin/Editusers';
 import '../StylesSheet/Sidebar.css';
 import VotingChart from '../Admin/VotingChart';
 import axios from 'axios';
-
+import Controlblockchain from '../Admin/Controlvote';
 
 //Admin control
-
 export default function Controlpage() {
+    const [isConnected, setIsConnected] = useState(false);
+    const [account, setAccount] = useState(null);
     const [currentPage, setCurrentPage] = useState("Dashboard"); // Store current page state
+
     const token = localStorage.getItem('token'); // Check if token exists
     const user = localStorage.getItem('user'); // Check if user data exists
+
     const userData = user ? JSON.parse(user) : null; // Parse user data to JSON object
+
     const isAdmin = userData && userData.roles === 'admin'; // Check if user is an admin
 
+    const owner = userData.address_web3 === '0x229C0c5Da0A6595F652639271297C8Ee8324Ae52';
+
     const [usersdata, Setusersdata] = useState([]);
+
     const [votesData, setVotesData] = useState(null);
+
+    const [votesData2, setVotesData2] = useState(null);
+
+    const [verifyData,setVerifyData] = useState(true);
+ 
+    const [votesDataipfs, setVotesDataipfs] = useState(null);
+
+    const [indexdata,setindexdata] = useState(null);
+
     const [isMenuExpanded, setIsMenuExpanded] = useState(true);
 
+    console.log(votesData ? Object.keys(votesData.votes).length : 0);
+    // const votelengthlastdata = votesData.votes.length - 1;
+                
+    // setindex(votelengthlastdata);
+    console.log(votesData);
+    
     const handleMenuToggle = () => {
       setIsMenuExpanded(prevState => !prevState);
     };
@@ -30,10 +52,12 @@ export default function Controlpage() {
     // const toggleCardSize = () => {
     //   setIsMenuExpanded(prevState => !prevState);
     // };
-
     useEffect(() => {
         if (!isAdmin && !token) {
             window.location.href = "/Dashboard";
+        }
+        else{
+            setIsConnected(true);
         }
     }, [isAdmin, token]); // Dependencies: isAdmin and token
 
@@ -49,19 +73,70 @@ export default function Controlpage() {
                 console.error('Error fetching votes data:', error);
             }
         };
+
+        fetchVotesDatausers();
+    }, []);
+
+    const fetchVotesDataipfs = async () => {
+        try {
+            const response = await axios.get(`https://black-ready-gayal-309.mypinata.cloud/ipfs/${votesDataipfs}`);
+            const ipfsData = JSON.parse(response.data.voteData); // แปลงข้อมูล JSON จาก IPFS
+            setVotesData2(ipfsData);
+            console.log(ipfsData.votes); // เข้าถึงข้อมูล votes ใน IPFS
+        } catch (error) {
+            console.error('Error fetching votes data:', error);
+        }
+    };
+    
+    // เรียกใช้ fetchVotesDataipfs หากมีข้อมูล votesDataipfs ที่มีค่าไม่ใช่ null
+    useEffect(() => {
+        if (votesDataipfs !== null) {
+            fetchVotesDataipfs();
+        }
+    }, [votesDataipfs]);
+
+    useEffect(() => {
         const fetchVotesData = async () => {
             try {
                 const response = await axios.get('http://localhost:8000/sh-votesData');
                 const data = response.data; // Access the data object from the response
-                 setVotesData(data);
-                console.log(data.votes[0].votes)
+                const lastadata = data.votes.length -1 ;
+                 
+                 
+                 if(indexdata === null)
+                 {
+                    setVotesData(data.votes[lastadata]);
+                    setVotesDataipfs(data.votes[lastadata].IpfsHash);
+                    setindexdata(lastadata);
+                 }
+                 else{
+                    setVotesData(data.votes[indexdata]);
+                    setVotesDataipfs(data.votes[indexdata].IpfsHash)
+                 }
+                 
+                
+                console.log(lastadata);
             } catch (error) {
                 console.error('Error fetching votes data:', error);
             }
         };
-        fetchVotesDatausers();
         fetchVotesData();
-    }, []);
+    }, [indexdata]);
+
+    useEffect(() => {
+        if (window.ethereum) {window.ethereum.on('accountsChanged', handleAccountsChanged);}// Remove event listener when component unmounts
+        return () => {if (window.ethereum) {window.ethereum.removeListener('accountsChanged', handleAccountsChanged);}};
+      }); 
+
+    useEffect(() => {
+        // ตรวจสอบว่า votesData และ votesData2 มีค่าไม่เป็น null และ undefined
+        if (votesData !== null && votesData2 !== null) {
+            // เปรียบเทียบข้อมูลระหว่าง votesData และ votesData2
+            const isDataMatch = JSON.stringify(votesData.votes) === JSON.stringify(votesData2.votes);
+            // ตั้งค่าตัวแปร verifyData ตามผลการเปรียบเทียบ
+            setVerifyData(!isDataMatch);
+        }
+    }, [votesData, votesData2]);
 
     const adminCount = usersdata.reduce((count, user) => {
         if (user.roles === 'admin') {
@@ -86,7 +161,6 @@ export default function Controlpage() {
         return count;
     }, 0);
 
-
     const pageMain = () => {
         setCurrentPage("Dashboard");
     };
@@ -96,21 +170,35 @@ export default function Controlpage() {
     const pageEditUsers = () => {
         setCurrentPage("EditUser");
     };
-    const pageSomeOtherPage = () => {
-        setCurrentPage("Addcandidate");
-    };
+    // const pageSomeOtherPage = () => {
+    //     setCurrentPage("Addcandidate");
+    // };
     const pagevotescores = () => {
         setCurrentPage("votescores");
     };
     const pagecontrolvote = () => {
         setCurrentPage("controlvote");
     };
+    const pagecontrolvote2 = () => {
+        setCurrentPage("ManageVoting");
+    };
+
+    function handleAccountsChanged(accounts) {
+        if (accounts.length > 0 && account !== accounts[0]) {
+            setAccount(accounts[0]);
+            setIsConnected(true);
+        } else {
+          setIsConnected(false);
+          setAccount(null);
+        }
+        localStorage.clear();
+        window.location.href="./dashboard";
+      }
 
     return (
         <>
         <Navadmin /><br />
             <div className='container-fluid'>
-
                 <div className={isMenuExpanded ? 'row g-3':'row g-3'}>
                     <div className={isMenuExpanded ? 'col-md-2 ' : 'col-md-1'}>
                         <div className='card shadow-sm' 
@@ -146,7 +234,14 @@ export default function Controlpage() {
                                                 <a className={`nav-link 
                                                     ${currentPage === 'controlvote' ? 'nav-link-font' : ''}`} 
                                                     href='#Manage Voting' onClick={pagecontrolvote}>
-                                                    <i className="bi bi-gear me-2" ></i>Manage Voting
+                                                    <i className="bi bi-gear me-2" ></i>verification users
+                                                </a>
+                                            </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'ManageVoting ' ? 'nav-link-active' : ''}`}>
+                                                <a className={`nav-link 
+                                                    ${currentPage === 'ManageVoting ' ? 'nav-link-font' : ''}`} 
+                                                    href='#Manage Voting' onClick={pagecontrolvote2}>
+                                                    <i className="bi bi-gear me-2" ></i>Manage Voting 
                                                 </a>
                                             </li>
 
@@ -166,13 +261,13 @@ export default function Controlpage() {
                                                     <i className="bi bi-person-plus me-2" ></i>Add Voter
                                                 </a>
                                             </li>
-                                            <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`}>
+                                            {/* <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`}>
                                                 <a className={`nav-link 
                                                     ${currentPage === 'Addcandidate' ? 'nav-link-font' : ''}`} 
                                                     href='#Add Candidate' onClick={pageSomeOtherPage}>
                                                     <i className="bi bi-person-plus me-2"></i>Add Candidate
                                                 </a>
-                                            </li>
+                                            </li> */}
 
                                         </>
                                     ) : (
@@ -191,6 +286,13 @@ export default function Controlpage() {
                                                     <i className="bi bi-gear bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
                                                 </a>
                                             </li>
+                                            <li className={`nav-item mb-3 ${currentPage === 'ManageVoting' ? 'nav-link-active' : ''}`} 
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Manage Voting">
+                                                <a className={`nav-link ${currentPage === 'ManageVoting' ? 'nav-link-font' : ''}`}  
+                                                    href='#sdf' onClick={pagecontrolvote2} style={{textAlign:"center"}}>
+                                                    <i className="bi bi-gear bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
+                                                </a>
+                                            </li>
                                             <li className={`nav-item mb-3 ${currentPage === 'EditUser' ? 'nav-link-active' : ''}`} 
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Users">
                                                 <a className={`nav-link ${currentPage === 'EditUser' ? 'nav-link-font' : ''}`}  
@@ -205,13 +307,13 @@ export default function Controlpage() {
                                                     <i className="bi bi-person-plus bi-3x me-2"style={{fontSize:"24.5px"}} ></i>
                                                 </a>
                                             </li>
-                                            <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`} 
+                                            {/* <li className={`nav-item mb-3 ${currentPage === 'Addcandidate' ? 'nav-link-active' : ''}`} 
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Add Candidate">
                                                 <a className={`nav-link ${currentPage === 'Add Candidate' ? 'nav-link-font' : ''}`} 
                                                     href='#sdf' onClick={pageSomeOtherPage} style={{textAlign:"center"}}>
                                                     <i className="bi bi-person-plus  me-2"style={{fontSize:"24.5px"}} ></i>
                                                 </a>
-                                            </li>
+                                            </li> */}
 
                                         </>
                                     )}
@@ -231,8 +333,8 @@ export default function Controlpage() {
                                                     onClick={pageMain} style={{ color: currentPage === 'Dashboard' ? 'blue' : 'black' }}>Dashboard</li>
                                                 <li className={`breadcrumb-item ${currentPage === 'AddUser' ? '' : ''}`} 
                                                     onClick={pageAddUser} style={{ color: currentPage === 'AddUser' ? 'blue' : 'black' }}>Add User</li>
-                                                <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? '' : ''}`} 
-                                                    onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li>
+                                                {/* <li className={`breadcrumb-item ${currentPage === 'Addcandidate' ? '' : ''}`} 
+                                                    onClick={pageSomeOtherPage} style={{ color: currentPage === 'Addcandidate' ? 'blue' : 'black' }}>Addcandidate</li> */}
                                                 <li className={`breadcrumb-item ${currentPage === 'votescores' ? '' : ''}`} 
                                                     onClick={pagevotescores} style={{ color: currentPage === 'votescores' ? 'blue' : 'black' }}>votescore</li>
                                                 <li className={`breadcrumb-item ${currentPage === 'controlvote' ? '' : ''}`} 
@@ -241,7 +343,7 @@ export default function Controlpage() {
                                                     onClick={pageEditUsers} style={{ color: currentPage === ' EditUser' ? 'blue' : 'black' }}>EditUser</li>
                                             </ol>
                                         </nav>
-                                        {currentPage === "Dashboard" &&<>
+                                        {currentPage === "Dashboard"&& isConnected &&<>
                                             <div className='row  row-cols-1 row-cols-sm-2 row-cols-md-2'>
                                                 <div className='col'>
                                                     <div className='row g-3 row-cols-1 row-cols-sm-1= row-cols-md-2'>
@@ -293,50 +395,71 @@ export default function Controlpage() {
                                                 </div>
 
                                                 <div className='col'>
-                                                    <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-2'>
+                                                    <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-1'>
                                                         <div className='col'>
                                                             <div className='card shadow-sm ' style={{border:"none" }}>
                                                                 <div className='card-body'>
+                                                                    <div className='card-title'><h3>All voting</h3></div>
+                                                                    <div className='card-text'>
+                                                                        <h3><i class="bi bi-database"></i> {votesData ? Object.keys(votesData.votes).length : 0}</h3>
+                                                                        <p style={{opacity:"60%"}}>All voting datasets</p>
+                                                                    </div>
+                                                                    
 
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className='col'>
+                                                        {/* <div className='col'>
                                                             <div className='card shadow-sm h-100' style={{border:"none"}}>
                                                                 <div className='card-body'>
 
                                                                 </div>
                                                             </div>
-                                                        </div>
+                                                        </div> */}
                                                     </div>
                                                 </div>
                                                 <br/>
                                             </div>
                                             <br/>
 
-                                            <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-2'>
+                                            <div className='row g-3 row-cols-1 row-cols-sm-1 row-cols-md-1'>
                                                 <div className='col'> 
                                                     <div className='card shadow-sm' style={{border:"none"}}>
                                                         <div className='card-body'>
-                                                            <VotingChart votingData={votesData} />
+                                                            <div className='card-text'>
+                                                                <h3>Latest Voting</h3>
+                                                                <VotingChart votingData={votesData} />
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div className='col'> 
+                                                {/* <div className='col'> 
                                                     <div className='card shadow-sm' style={{border:"none"}}>
                                                         <div className='card-body'>
-                                                            <VotingChart votingData={votesData} />
+                                                            
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> */}
                                             </div>
                                         
                                         </> }
-                                        {currentPage === "AddUser" && <Adduser />}
-                                        {currentPage === "EditUser" && <EditUserForm />}
-                                        {currentPage === "Addcandidate" && <Addcandidate />}
-                                        {currentPage === "votescores" && <Votescores votesData={votesData}/>}
-                                        {currentPage === "controlvote" && <Controlvote />}
+                                        {currentPage === "AddUser" && isConnected && <Adduser />}
+                                        {currentPage === "EditUser" && isConnected && <EditUserForm />}
+                                        {/* {currentPage === "Addcandidate" && isConnected && <Addcandidate />} */}
+
+                                        {currentPage === "votescores" && isConnected && 
+                                        <Votescores 
+                                            votesData={votesData} 
+                                            votesData2={votesData2} 
+                                            verifyData={verifyData}
+                                        />}
+
+                                        {currentPage === "controlvote" && isConnected && <Controlvote />}
+                                        {currentPage === "ManageVoting" && isConnected && owner && (
+                                            <Controlblockchain />
+                                        ) }
+
+
                                     </div>
                             </div>     
                           

@@ -6,7 +6,7 @@ export default function Navadmin() {
   
   useEffect(() => { const token = localStorage.getItem('token'); if (token) { setIsLoggedIn(true); } }, []);
 
-  const handleLogout = () => { deleteToken(); setIsLoggedIn(false); }// ฟังก์ชันสำหรับออกจากระบบ
+  const handleLogout = () => { deleteToken(); setIsLoggedIn(false); window.location.href = '/dashboard' }// ฟังก์ชันสำหรับออกจากระบบ
 
   const Login = () => { window.location.href = '/dashboard' }
 

@@ -173,6 +173,41 @@ router.get('/sh-votesData', async (req, res) => {
 //   }
 // });
 
+router.put('/votesData-repost', async (req, res) => {
+  try {
+      // Check if required fields are missing
+      if (!req.body.name_vote || !req.body.votes || !req.body.endDate || Object.keys(req.body.votes).length === 0) {
+          return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      // Check if the data already exists in the MongoDB
+      const existingVote = await Vote.findOne({ _id: req.body._id, IpfsHash: req.body.IpfsHash });
+
+      // If the data doesn't exist or if it exists but differs from the request body, proceed
+      if (!existingVote || JSON.stringify(existingVote.votes) !== JSON.stringify(req.body.votes) || existingVote.endDate !== req.body.endDate) {
+          // Update existing vote or create a new one
+          const updatedVote = {
+              name_vote: req.body.name_vote,
+              votes: req.body.votes,
+              endDate: req.body.endDate,
+              IpfsHash: req.body.IpfsHash
+          };
+
+          // Perform update or create operation
+          const options = { upsert: true, new: true }; // Option to create new document if not found
+          const result = await Vote.findOneAndUpdate({ _id: req.body._id, IpfsHash: req.body.IpfsHash }, updatedVote, options);
+
+          return res.status(200).json({ message: 'Vote updated or created successfully', vote: result });
+      } else {
+          return res.status(200).json({ message: 'Vote already exists and matches the request' });
+      }
+  } catch (error) {
+      console.error('Error processing request:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 router.post('/votesData', limiter, async (req, res) => {
   try {
     // Validate required fields

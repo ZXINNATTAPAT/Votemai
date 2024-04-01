@@ -40,9 +40,16 @@ contract Voting {
         _;
     }
 
-    function addCandidate(string memory _name) public onlyOwner votingNotStopped {
-        candidates.push(Candidate({name: _name, voteCount: 0}));
+    // function addCandidate(string memory _name) public onlyOwner votingNotStopped {
+    //     candidates.push(Candidate({name: _name, voteCount: 0}));
+    // }
+
+    function addCandidates(string[] memory _names) public onlyOwner votingNotStopped {
+    for (uint256 i = 0; i < _names.length; i++) {
+        candidates.push(Candidate({name: _names[i], voteCount: 0}));
     }
+}
+
 
     function vote(uint256 _candidateIndex) public votingNotStopped {
         require(!voters[msg.sender], "You have already voted.");
@@ -77,12 +84,16 @@ contract Voting {
     }
 
     function clearData() public onlyOwner {
-        // delete candidates;
+        // for (uint256 i = 0; i < candidates.length; i++) {
+        //     candidates[i].voteCount = 0; // ล้างค่า voteCount ในแต่ละผู้สมัคร
+        // }
+        delete candidates;
         votingStart = 0;
         votingEnd = 0;
         votingStopped = false;
     }
 
+    //กำหนดเวลาของ Voting ใหม่
     function setVotingEnd(uint256 _durationInMinutes) public onlyOwner {
         votingEnd = block.timestamp + (_durationInMinutes * 1 minutes);
     }

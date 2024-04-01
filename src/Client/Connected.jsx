@@ -1,5 +1,5 @@
 import React, { useState ,useEffect } from "react";
-import Navbar from "../Components/Navbar";
+// import Navbar from "../Components/Navbar";
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import '../StylesSheet/Component.css'
@@ -9,35 +9,38 @@ const Connected = (props) => {
   const [user, setuser] = useState([]);
   const [number, setNumber] = useState(props.number);
   const [Approve,SetApprove] = useState(false);
-
+  
   const updateVote = async () => {
-    try {
-      const requestData = {
-        address_web3: props.account,
-        code_id: user.code_id,
-        system_req: "vote_sucess"
-      };
-      console.log(requestData);
+        try {
+        const requestData = {
+          address_web3: props.account,
+          code_id: user.code_id,
+          system_req: "vote_sucess"
+        };
+        console.log(requestData);
 
-      const response = await axios.post('http://localhost:8000/update-vote', requestData);
+        const response = await axios.post('http://localhost:8000/update-vote', requestData);
 
-      if (response.status === 200) {
-        console.log('Vote updated successfully');
-        console.log('New vote count:', response.data.newVoteCount);
-      } else {
-        console.log('Failed to update vote');
+        if (response.status === 200) {
+          console.log('Vote updated successfully');
+          console.log('New vote count:', response.data.newVoteCount);
+        } else {
+          console.log('Failed to update vote');
+        }
+      } catch (error) {
+        console.error('Error updating vote:', error);
       }
-    } catch (error) {
-      console.error('Error updating vote:', error);
-    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(); // หยุดการกระทำของฟอร์มเมื่อถูกส่ง
     props.voteFunction(number);
-    updateVote();
+    if(!props.button){
+      updateVote();
+    }
   };
 
+ 
   useEffect(() => {
     props.handleNumberChange(number);
   }, [number ,props]); // Empty dependency array to run the effect only once after the initial render
@@ -162,19 +165,19 @@ const Connected = (props) => {
     <>
       {Approve ? (
         <>
-          <Navbar />
+          {/* <Navbar /> */}
           <div className="container">
             <div className="container "><br /><br />
               <h1 className="fonty">You are <span className="text-primary">Connected</span> to Metamask</h1>
               <p className="">Account: {props.account}</p>
               <p className="">Remaining Time: {props.remainingTime}</p>
-              {props.showButton ? (
-                <div className="card shadow-sm " style={{ border: "none" }}>
-                  <div className="card-body">
-                    <h3 className="connected-account" style={{ textAlign: "center" }}><strong>You have already voted </strong></h3>
+                {props.showButton ? (
+                  <div className="card shadow-sm " style={{ border: "none" }}>
+                    <div className="card-body">
+                      <h3 className="connected-account" style={{ textAlign: "center" }}><strong>You have already voted </strong></h3>
+                    </div>
                   </div>
-                </div>
-              ) : (
+                ) : (
                 <div className="row g-3">
                   <div className="col">
                     <form onSubmit={handleSubmit}>
