@@ -23,7 +23,7 @@ export default function Homepage() {
     console.log(users);
 
     useEffect(() => {
-        fetch('http://localhost:8000/users')
+        fetch('https://votemai-api-cts.vercel.app/users')
             .then(response => response.json()) // แปลง response เป็น JSON
             .then(data => {
                 // กรองข้อมูลเฉพาะฟิลด์ roles ที่มีค่าเป็น "user"
@@ -36,7 +36,7 @@ export default function Homepage() {
     useEffect(() => {
         const fetchVotesData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/sh-votesData');
+                const response = await axios.get('https://votemai-api-cts.vercel.app/sh-votesData');
                 const data = response.data; // Access the data object from the response
                 const lastadata = data.votes.length -1 ;
                  
@@ -101,7 +101,7 @@ export default function Homepage() {
             confirmButtonText: 'Check Data',
             showLoaderOnConfirm: true,
             preConfirm: (secret_Key) => {
-                return fetch('http://localhost:8000/decrypted/users', {
+                return fetch('https://votemai-api-cts.vercel.app/decrypted/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
