@@ -1,4 +1,4 @@
-# Decentralized Voting Application
+# Decentralized Voting Application + IPFS 
 
 นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
