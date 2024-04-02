@@ -22,7 +22,6 @@
     "mongodb": "^6.4.0",
     "mongoose": "^8.2.0",
     "node": "^18.17.0",
-    "@vercel/node": "^2.9.6",
     "nodemon": "^3.1.0"
   },
   "devDependencies": {
