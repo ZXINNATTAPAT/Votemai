@@ -1,5 +1,6 @@
 # Decentralized Voting Application + IPFS 
 
+Use vercel to deploy *
 นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
 
 ## Features
