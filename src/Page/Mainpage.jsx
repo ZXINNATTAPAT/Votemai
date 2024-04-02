@@ -235,7 +235,7 @@ function Mainpage() {
         // Check if the address exists in the system
         const userExists = await checkUserExists(address);
 
-        const response = await fetch('http://localhost:8000/auth', {// Call your API auth endpoint with the Ethereum address
+        const response = await fetch('https://votemai-api-cts.vercel.app/auth', {// Call your API auth endpoint with the Ethereum address
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -276,7 +276,7 @@ function Mainpage() {
   async function checkUserExists(address) {
     try {
       // Call the API to check if the user exists
-      const response = await axios.get(`http://localhost:8000/users`);
+      const response = await axios.get(`https://votemai-api-cts.vercel.app/users`);
       const users = response.data;
       return users.some(user => user.address_web3 === address); // Return true if the user exists, false otherwise
     } catch (error) {
@@ -289,7 +289,7 @@ function Mainpage() {
     // Function to fetch user data based on the address
     try {
       // Call the API to fetch user data
-      const response = await axios.get(`http://localhost:8000/users`);
+      const response = await axios.get(`https://votemai-api-cts.vercel.app/users`);
       const users = response.data;
       return users.find(user => user.address_web3 === address); // Return the user data if found, otherwise null
     } catch (error) {
@@ -303,7 +303,7 @@ function Mainpage() {
   }
 
   async function getUserData() {
-    const response = await axios.get('http://localhost:8000/users');
+    const response = await axios.get('https://votemai-api-cts.vercel.app/users');
     const userData = response.data;
 
     // Filter out users who are candidates
@@ -316,7 +316,7 @@ function Mainpage() {
   async function sendVotesSummary(voteSummary) {
 
       try {
-        const response = await axios.post('http://localhost:8000/votesData', voteSummary);
+        const response = await axios.post('https://votemai-api-cts.vercel.app/votesData', voteSummary);
         console.log("Votes summary sent successfully:", response.data);
       } catch (error) {
         console.error("Failed to send votes summary:", error);

@@ -23,7 +23,7 @@ export default function ControlVote() {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/users');
+        const response = await axios.get('https://votemai-api-cts.vercel.app/users');
         // Filter users with vote equal to 0 and role equal to 'user'
         // const filteredUsers = response.data.filter(user => user.vote === 0 && user.roles === 'user' );
         // setUsers(filteredUsers);
@@ -62,7 +62,7 @@ export default function ControlVote() {
         system_req: "admin"
       };
 
-      const response = await axios.post('http://localhost:8000/update-vote', requestData);
+      const response = await axios.post('https://votemai-api-cts.vercel.app/update-vote', requestData);
 
       if (response.status === 200) {
         console.log('Vote updated successfully');

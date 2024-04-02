@@ -65,7 +65,7 @@ export default function Controlpage() {
     useEffect(() => {
         const fetchVotesDatausers = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/users');
+                const response = await axios.get('https://votemai-api-cts.vercel.app/users');
                 const data = response.data; // Access the data object from the response
                 Setusersdata(data);
                 console.log(data)
@@ -98,7 +98,7 @@ export default function Controlpage() {
     useEffect(() => {
         const fetchVotesData = async () => {
             try {
-                const response = await axios.get('http://localhost:8000/sh-votesData');
+                const response = await axios.get('https://votemai-api-cts.vercel.app/sh-votesData');
                 const data = response.data; // Access the data object from the response
                 const lastadata = data.votes.length -1 ;
                  

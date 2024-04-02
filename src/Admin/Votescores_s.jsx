@@ -20,7 +20,7 @@ export default function Votescores( {votesData , votesData2 ,verifyData} ) {
       const sendDataRepost = async (data) => {
         try {
             // Send a PUT request to the server API endpoint
-            const response = await axios.put('http://localhost:8000/votesData-repost', data);
+            const response = await axios.put('https://votemai-api-cts.vercel.app/votesData-repost', data);
 
             // Log the response from the server
             console.log('Response from server:', response.data);

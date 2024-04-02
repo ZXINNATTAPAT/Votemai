@@ -61,7 +61,7 @@ export default function Controlblockchain() {
   }
 
   const addCandidates = async () => {
-    const response = await axios.get('http://localhost:8000/users');
+    const response = await axios.get('https://votemai-api-cts.vercel.app/users');
     const userData = response.data;
 
     // Filter out users who are candidates

@@ -19,7 +19,7 @@ const Connected = (props) => {
         };
         console.log(requestData);
 
-        const response = await axios.post('http://localhost:8000/update-vote', requestData);
+        const response = await axios.post('https://votemai-api-cts.vercel.app/update-vote', requestData);
 
         if (response.status === 200) {
           console.log('Vote updated successfully');
@@ -64,7 +64,7 @@ const Connected = (props) => {
     const checkUserExistence = async () => {
         try {
             // Call the API to check if the user exists
-            const response = await axios.get(`http://localhost:8000/users`);
+            const response = await axios.get(`https://votemai-api-cts.vercel.app/users`);
             const users = response.data;
             const userExists = users.some(user => user.address_web3 === props.account && user.vote === 1); // Check if the user exists
             const userdata = users.find(user =>user.address_web3 === props.account);

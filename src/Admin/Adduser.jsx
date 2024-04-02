@@ -19,7 +19,7 @@ export default function AddUser() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/addusers', formData);
+            const response = await axios.post('https://votemai-api-cts.vercel.app/addusers', formData);
             console.log(response.data.message);
 
         } catch (error) {

@@ -26,7 +26,7 @@ const EditUserPage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/users');
+        const response = await axios.get('https://votemai-api-cts.vercel.app/users');
         setUsers(response.data);
       } catch (error) {
         console.error('Failed to fetch users:', error);
@@ -48,7 +48,7 @@ const EditUserPage = () => {
   const handleEditApi = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:8000/users/${formData._id}`, formData);
+      await axios.put(`https://votemai-api-cts.vercel.app/users/${formData._id}`, formData);
       alert('User updated successfully');
     } catch (error) {
       console.error('Failed to update user:', error);
@@ -58,7 +58,7 @@ const EditUserPage = () => {
   
   const handleDelete = async (codeId) => {
     try {
-      await axios.delete(`http://localhost:8000/users/${codeId}`);
+      await axios.delete(`https://votemai-api-cts.vercel.app/users/${codeId}`);
       // Optionally, refresh page or update users state to remove deleted user from the table
     } catch (error) {
       console.error('Failed to delete user:', error);

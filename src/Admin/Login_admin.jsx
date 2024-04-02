@@ -21,7 +21,7 @@ export default function Login_admin() {
             const signer = provider.getSigner();// Gets the signer (account) from the provider
             const address = await signer.getAddress();// Retrieves the Ethereum address of the connected account
             console.log("Metamask Connected: " + address);// Logs the connected address to the console
-            const response = await fetch('http://localhost:8000/auth', {// Call your API auth endpoint with the Ethereum address
+            const response = await fetch('https://votemai-api-cts.vercel.app/auth', {// Call your API auth endpoint with the Ethereum address
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
