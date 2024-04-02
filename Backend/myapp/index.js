@@ -15,7 +15,6 @@ app.get('/', function (req, res) { res.send('Hello World!') })
 mongoose.connect(process.env.MONGODB_URI, {}).then(() => { console.log('Connected to MongoDB'); })
   .catch((err) => { console.error('Error connecting to MongoDB', err); });
 
-
 // เชื่อมต่อเส้นทางในไฟล์ routes
 app.use(User);
 app.use(Auth);
