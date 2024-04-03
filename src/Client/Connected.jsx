@@ -168,7 +168,7 @@ const Connected = (props) => {
           {/* <Navbar /> */}
           <div className="container">
             <div className="container "><br /><br />
-              <h1 className="fonty">You are <span className="text-primary">Connected</span> to Metamask</h1>
+              <h1 className="">You are <span className="text-primary">Connected</span> to Metamask</h1>
               <p className="">Account: {props.account}</p>
               <p className="">Remaining Time: {props.remainingTime}</p>
                 {props.showButton ? (

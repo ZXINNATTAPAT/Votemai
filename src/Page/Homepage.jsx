@@ -32,6 +32,7 @@ export default function Homepage() {
             })
             .catch(error => console.error('Error fetching users:', error));
     }, []);
+    
 
     useEffect(() => {
         const fetchVotesData = async () => {
