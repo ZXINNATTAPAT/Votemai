@@ -46,7 +46,8 @@ export default function Controlblockchain() {
       }
   }
 
-  const setEnd = async () => {
+  const setEnd = async (e) => {
+    e.preventDefault();
       const signer = await connectToMetaMask();
       if (signer) {
           const contractInstance = new ethers.Contract(
