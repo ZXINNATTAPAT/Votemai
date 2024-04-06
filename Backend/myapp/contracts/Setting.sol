@@ -84,14 +84,17 @@ contract Voting {
     }
 
     function clearData() public onlyOwner {
-        // for (uint256 i = 0; i < candidates.length; i++) {
-        //     candidates[i].voteCount = 0; // ล้างค่า voteCount ในแต่ละผู้สมัคร
-        // }
+        // ล้างข้อมูลโหวตของแต่ละผู้สมัคร
+        for (uint256 i = 0; i < candidates.length; i++) {
+            candidates[i].voteCount = 0;
+        }
+
+        // เซ็ตค่าต่าง ๆ กลับไปเริ่มต้น
         delete candidates;
         votingStart = 0;
         votingEnd = 0;
         votingStopped = false;
-    }
+        }
 
     //กำหนดเวลาของ Voting ใหม่
     function setVotingEnd(uint256 _durationInMinutes) public onlyOwner {
