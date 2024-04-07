@@ -2,8 +2,7 @@
 
 # Decentralized Voting Application + IPFS 
 
-Use vercel to deploy *
-นี่คือแอปพลิเคชันสาธิตการใช้งานการลงคะแนนใน smart contract ที่แข็งแกร่งโดยใช้ ReactJS + Bootstrap
+The Decentralized Voting Application for Student President Election is a modern platform built using the MERN stack (MongoDB, Express.js, React.js, Node.js) integrated with IPFS, MATIC Chain, Solidity, and Metamask.
 
 ## Features
 - Decentralized voting system powered by smart contracts on the MATIC blockchain.
