@@ -1,5 +1,9 @@
 <img src="https://github.com/ZXINNATTAPAT/ZXINNATTAPAT/blob/main/VOTEMAI.png" />
 
+พัฒนาและต่อยอดจากโปรเจกต์ของคุณ syedmuhamaddanish
+ขอขอบคุณมา ณ ที่นี้ครับ 🙏
+https://github.com/syedmuhamaddanish/Decentralized-Voting-Application-on-Ethereum-Blockchain
+
 # Decentralized Voting Application + IPFS 
 
 The Decentralized Voting Application for Student President Election is a modern platform built using the MERN stack (MongoDB, Express.js, React.js, Node.js) integrated with IPFS, MATIC Chain, Solidity, and Metamask.
@@ -76,6 +80,7 @@ JWT_SECRET= "เชตเป็นอะไรก็ได้"
 
 ## How to 
 
-- [MATIC Network](https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f) - How to connect Polygon Mumbai Testnet to MetaMask 
+- [MATIC Network](https://medium.com/stakingbits/how-to-connect-polygon-mumbai-testnet-to-metamask-fc3487a3871f) - How to connect Polygon Mumbai Testnet to MetaMask
+  
 
 
